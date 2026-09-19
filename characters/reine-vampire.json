@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "name": "Reine Vampire",
+  "symbols": "AAABBC",
+  "abilities": [
+    { "name": "Incision 1", "symbols": "AAA" },
+    { "name": "Incision 2", "symbols": "AAAA" },
+    { "name": "Incision 3", "symbols": "AAAAA" },
+    { "name": "Sanguimancie", "symbols": "BBBC" },
+    { "name": "Présence *", "symbols": "ABCC" },
+    { "name": "Glamour", "symbols": "BBB" },
+    { "name": "Influence *", "symbols": "ABB" },
+    { "name": "Déchiqueter", "symbols": "AAACC" },
+    { "name": "Saignement *", "symbols": "AAC" },
+    { "name": "Lacération", "symbols": "AACC" },
+    { "name": "Soif de sang", "symbols": "CCCC" },
+    { "name": "Effusion de sang", "symbols": "CCC" },
+    { "name": "Possession", "straight": "small" },
+    { "name": "Magie du sang", "straight": "large" },
+    { "name": "Exsanguination ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

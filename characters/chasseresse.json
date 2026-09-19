@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "name": "Chasseresse",
+  "symbols": "AABBCD",
+  "abilities": [
+    { "name": "Bestiale 1", "symbols": "AAA" },
+    { "name": "Bestiale 2", "symbols": "AAAA" },
+    { "name": "Bestiale 3", "symbols": "AAAAA" },
+    { "name": "Réanimer", "symbols": "CC" },
+    { "name": "Sauvage", "symbols": "BBBD" },
+    { "name": "Chasse *", "symbols": "BBD" },
+    { "name": "Instincts Féroces", "symbols": "AAAC" },
+    { "name": "Coups de patte *", "symbols": "AAD" },
+    { "name": "Charge 1", "straight": "small" },
+    { "name": "Charge 2", "straight": "large" },
+    { "name": "Traque Prédatrice", "symbols": "AABBC" },
+    { "name": "Jugulaire *", "symbols": "ABD" },
+    { "name": "Nature Cruelle", "symbols": "DDDD" },
+    { "name": "Farouche *", "symbols": "DDD" },
+    { "name": "Fureur de la jungle ! (ultime)", "symbols": "DDDDD" }
+  ]
+}
