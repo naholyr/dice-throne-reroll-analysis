@@ -62,7 +62,8 @@ class ReportTests(unittest.TestCase):
         report = render_report(analyze_character(character))
 
         self.assertIn("Issues de cette relance", report)
-        self.assertIn("Rien du tout&nbsp;: <strong>67&nbsp;%</strong>", report)
+        self.assertIn("💀 Whiff&nbsp;: <strong>67&nbsp;%</strong>", report)
+        self.assertNotIn("Rien du tout", report)
         self.assertIn("Un B&nbsp;: <strong>17&nbsp;%</strong>", report)
         self.assertIn('id="upgraded-filter"', report)
         self.assertIn('data-upgraded="true"', report)

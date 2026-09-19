@@ -108,9 +108,9 @@ def _reroll_outcomes_label(
     )
     items = [
         outcome(
-            "Rien du tout", nothing_without_upgraded, css_class="without-upgraded"
+            "💀 Whiff", nothing_without_upgraded, css_class="without-upgraded"
         ),
-        outcome("Rien du tout", outcomes["nothing"], css_class="with-upgraded"),
+        outcome("💀 Whiff", outcomes["nothing"], css_class="with-upgraded"),
     ]
     items.extend(
         outcome(
