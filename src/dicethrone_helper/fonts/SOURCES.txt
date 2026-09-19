@@ -1,0 +1,12 @@
+Font assets downloaded from Google Fonts on 2026-09-19.
+
+League Spartan, variable weight 200–900, Latin subset:
+https://fonts.gstatic.com/s/leaguespartan/v15/kJEqBuEW6A0lliaV_m88ja5TwvZwLZmXD4Zh.woff2
+SHA-256: bf980237df2699b573fb9360bf10ee5d3adc2a3c90bc20a8115b6b344a4769ae
+
+Roboto Condensed, variable weight 100–900, Latin subset:
+https://fonts.gstatic.com/s/robotocondensed/v31/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQk6YvM.woff2
+SHA-256: 718ced55c5d8e207d6d14b1765fe6cf5886882834f45cc0ad23283cd210f9a96
+
+Both fonts are distributed under the SIL Open Font License 1.1. The corresponding
+license texts are stored alongside the font files.

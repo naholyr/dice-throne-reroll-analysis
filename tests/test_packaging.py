@@ -14,6 +14,10 @@ class PackagingTests(unittest.TestCase):
             "dicethrone_helper.cli:main",
         )
         self.assertEqual(metadata["tool"]["setuptools"]["packages"]["find"]["where"], ["src"])
+        self.assertEqual(
+            metadata["tool"]["setuptools"]["package-data"]["dicethrone_helper"],
+            ["fonts/*.woff2", "fonts/*.txt"],
+        )
 
 
 if __name__ == "__main__":

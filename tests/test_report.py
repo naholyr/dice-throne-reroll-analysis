@@ -33,6 +33,27 @@ class ReportTests(unittest.TestCase):
         )
         self.assertIn('placeholder="ex. 12346"', report)
         self.assertIn("Saisir cinq chiffres, dans n’importe quel ordre", report)
+        self.assertIn('@font-face{font-family:"League Spartan"', report)
+        self.assertIn('@font-face{font-family:"Roboto Condensed"', report)
+        self.assertIn("src:url(data:font/woff2;base64,", report)
+        self.assertIn("Licences typographiques", report)
+        self.assertIn(
+            "Copyright 2020 The League Spartan Project Authors "
+            "(https://github.com/theleagueof/league-spartan)",
+            report,
+        )
+        self.assertIn(
+            "Copyright 2011 The Roboto Project Authors "
+            "(https://github.com/googlefonts/roboto-classic)",
+            report,
+        )
+        self.assertIn("SIL OPEN FONT LICENSE Version 1.1", report)
+        self.assertIn(
+            'body{margin:0;background:var(--paper);color:var(--ink);'
+            'font-family:"Roboto Condensed"',
+            report,
+        )
+        self.assertIn('h1,h2,h3{font-family:"League Spartan"', report)
         self.assertIn('class="section-links"', report)
         self.assertIn("align-items:flex-start", report)
         self.assertIn("scroll-padding-top:var(--anchor-offset,6rem)", report)
@@ -49,8 +70,9 @@ class ReportTests(unittest.TestCase):
         self.assertNotIn("Tout déplier", report)
         self.assertNotIn("Tout replier", report)
         self.assertNotIn("window.print", report)
-        self.assertNotIn("https://", report)
-        self.assertNotIn("http://", report)
+        self.assertNotIn('src="http', report)
+        self.assertNotIn('href="http', report)
+        self.assertNotIn("url(http", report)
 
     def test_report_shows_nothing_and_accidental_ability_probabilities(self) -> None:
         character = CharacterConfig.from_dict(

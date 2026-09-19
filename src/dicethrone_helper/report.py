@@ -1,10 +1,44 @@
 from __future__ import annotations
 
+import base64
 import html
 import json
 from fractions import Fraction
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
+
+
+@lru_cache(maxsize=1)
+def _embedded_font_css() -> str:
+    fonts = Path(__file__).with_name("fonts")
+
+    def encoded(filename: str) -> str:
+        return base64.b64encode((fonts / filename).read_bytes()).decode("ascii")
+
+    return (
+        '@font-face{font-family:"League Spartan";font-style:normal;'
+        'font-weight:200 900;font-display:swap;'
+        f'src:url(data:font/woff2;base64,{encoded("league-spartan-latin.woff2")}) '
+        'format("woff2")}'
+        '@font-face{font-family:"Roboto Condensed";font-style:normal;'
+        'font-weight:100 900;font-display:swap;'
+        f'src:url(data:font/woff2;base64,{encoded("roboto-condensed-latin.woff2")}) '
+        'format("woff2")}'
+    )
+
+
+@lru_cache(maxsize=1)
+def _embedded_font_license() -> str:
+    fonts = Path(__file__).with_name("fonts")
+    league_license = (fonts / "LICENSE-League-Spartan.txt").read_text(
+        encoding="utf-8"
+    )
+    roboto_license = (fonts / "LICENSE-Roboto-Condensed.txt").read_text(
+        encoding="utf-8"
+    )
+    roboto_copyright = roboto_license.splitlines()[0]
+    return html.escape(roboto_copyright + "\n\n" + league_license)
 
 
 def _as_fraction(raw: dict[str, int]) -> Fraction:
@@ -237,10 +271,11 @@ def render_report(analysis: dict[str, Any]) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <style>
+    {_embedded_font_css()}
     :root{{--ink:#182022;--muted:#637174;--paper:#fbfaf6;--card:#fff;--line:#dfe3dc;--accent:#9f2f2f;--accent-soft:#f6e8e2;--good:#246b4b;--shadow:0 8px 30px #17201c10}}
-    *{{box-sizing:border-box}} html{{scroll-behavior:smooth;scroll-padding-top:var(--anchor-offset,6rem)}} body{{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}}
+    *{{box-sizing:border-box}} html{{scroll-behavior:smooth;scroll-padding-top:var(--anchor-offset,6rem)}} body{{margin:0;background:var(--paper);color:var(--ink);font-family:"Roboto Condensed",sans-serif;font-size:15px;line-height:1.45}}
     header{{padding:3.5rem max(5vw,1.25rem) 2.5rem;background:linear-gradient(135deg,#232b2b,#3f2725);color:#fff}}
-    header p{{max-width:70ch;color:#e7dddd}} h1{{margin:0 0 .5rem;font:700 clamp(2rem,5vw,4.5rem)/1.02 Georgia,serif}} h2{{margin:3rem 0 1rem;font:700 2rem/1.1 Georgia,serif}} h3{{font:700 1.35rem/1.2 Georgia,serif}}
+    header p{{max-width:70ch;color:#e7dddd}} h1,h2,h3{{font-family:"League Spartan",sans-serif;font-weight:900;text-transform:uppercase;letter-spacing:-.02em}} h1{{margin:0 0 .5rem;font-size:clamp(2rem,5vw,4.5rem);line-height:1.02}} h2{{margin:3rem 0 1rem;font-size:2rem;line-height:1.1}} h3{{font-size:1.35rem;line-height:1.2}}
     main{{width:min(1500px,94vw);margin:auto;padding-bottom:5rem}} nav{{position:sticky;top:0;z-index:5;display:flex;gap:.7rem;align-items:flex-start;flex-wrap:wrap;padding:.8rem max(3vw,1rem);background:#fbfaf6ee;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}}
     nav label{{display:grid;gap:.2rem;color:var(--muted);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}} .filter-hint{{max-width:18rem;font-size:.7rem;font-weight:500;text-transform:none;letter-spacing:0}} input,select{{font:inherit;padding:.55rem .7rem;border:1px solid #bfc8c2;border-radius:.45rem;background:#fff}} nav .upgrade-toggle{{display:flex;align-items:center;gap:.45rem;padding-top:1.65rem;white-space:nowrap;text-transform:none;letter-spacing:0}} nav .upgrade-toggle input{{width:1rem;height:1rem;margin:0;padding:0;accent-color:var(--accent)}} .section-links{{display:flex;gap:.7rem;padding-top:1.33rem;white-space:nowrap}} nav a{{color:var(--accent);font-weight:700;padding:.55rem}}
     .intro{{max-width:80ch;color:var(--muted)}} .summary-table,.roll-card,.ability-section{{background:var(--card);box-shadow:var(--shadow);border:1px solid var(--line);border-radius:.65rem}}
@@ -249,7 +284,7 @@ def render_report(analysis: dict[str, Any]) -> str:
     .keep,.reroll{{display:inline-block;margin:0 .7rem .2rem 0}} .keep{{color:var(--good);font-weight:700}} .reroll{{color:var(--accent);font-weight:700}} .done{{color:var(--good);font-weight:700}} .ties{{color:var(--muted);font-size:.8rem}} .ties summary{{cursor:pointer}} .reroll-outcomes{{display:grid;gap:.15rem;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--line);color:var(--muted);font-size:.8rem}} .reroll-outcomes strong{{color:var(--ink)}}
     .roll-grid{{display:grid;gap:1rem}} .roll-card{{overflow:clip}} .roll-card>summary{{cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:#f4f1eb;list-style:none}} .roll-card>summary::-webkit-details-marker{{display:none}} .dice{{font:700 1rem/1 ui-monospace,monospace;letter-spacing:.06em}} .occurrence{{color:var(--muted);font-size:.8rem}}
     .ability-section{{margin:1.2rem 0;overflow:clip}} .ability-section h3{{margin:0;padding:1rem;background:var(--accent-soft)}} .hidden,body.is-filtering #overview,body:not(.include-upgraded) [data-upgraded="true"],body:not(.include-upgraded) .with-upgraded,body.include-upgraded .without-upgraded{{display:none!important}} .legend{{padding:.85rem 1rem;background:#edf3ef;border-left:4px solid var(--good)}}
-    footer{{color:var(--muted);text-align:center;padding:3rem}} 
+    footer{{color:var(--muted);text-align:center;padding:3rem}} .font-licenses{{margin:1rem auto 0;max-width:70rem;text-align:left}} .font-licenses summary{{cursor:pointer;text-align:center}} .font-licenses pre{{white-space:pre-wrap;font:11px/1.35 ui-monospace,monospace}}
     @media(max-width:760px){{nav .upgrade-toggle,.section-links{{flex-basis:100%;padding-top:0}} .rank,.exact{{display:none}} th,td{{padding:.5rem;font-size:.85rem}} .probability{{width:auto}} thead th{{top:7.5rem}}}}
     @media print{{body{{background:#fff;font-size:9pt}} header{{padding:1rem;background:#fff;color:#000;border-bottom:2px solid #000}} header p,nav,footer{{display:none}} main{{width:100%;padding:0}} h2{{break-before:page;margin-top:0}} .roll-card,.ability-section,.summary-table{{box-shadow:none;border:1px solid #999;break-inside:avoid}} .roll-card{{margin:.25rem 0}} .roll-card>summary{{padding:.3rem;background:#eee}} th,td{{padding:.25rem}} thead th{{position:static}} .exact{{font-size:7pt}} .ties{{display:none}}}}
   </style>
@@ -272,7 +307,7 @@ def render_report(analysis: dict[str, Any]) -> str:
   </section>
   <section id="second-roll"><h2>Après le deuxième lancer</h2><p class="intro">Index complet avec une seule relance restante, regroupé par capacité poursuivie. Les issues indiquées correspondent à la relance optimale affichée. Elles peuvent se cumuler&nbsp;: un même résultat peut activer plusieurs capacités.</p>{''.join(second_roll_sections)}</section>
 </main>
-<footer>Généré par dicethrone-helper {html.escape(analysis['engine']['version'])} · aucune simulation aléatoire</footer>
+<footer>Généré par dicethrone-helper {html.escape(analysis['engine']['version'])} · aucune simulation aléatoire<details class="font-licenses"><summary>Licences typographiques</summary><pre>{_embedded_font_license()}</pre></details></footer>
 <script>
 (() => {{
   const navigation = document.querySelector('nav');
