@@ -238,7 +238,7 @@ def render_report(analysis: dict[str, Any]) -> str:
   <title>{title}</title>
   <style>
     :root{{--ink:#182022;--muted:#637174;--paper:#fbfaf6;--card:#fff;--line:#dfe3dc;--accent:#9f2f2f;--accent-soft:#f6e8e2;--good:#246b4b;--shadow:0 8px 30px #17201c10}}
-    *{{box-sizing:border-box}} html{{scroll-behavior:smooth}} body{{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}}
+    *{{box-sizing:border-box}} html{{scroll-behavior:smooth;scroll-padding-top:var(--anchor-offset,6rem)}} body{{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}}
     header{{padding:3.5rem max(5vw,1.25rem) 2.5rem;background:linear-gradient(135deg,#232b2b,#3f2725);color:#fff}}
     header p{{max-width:70ch;color:#e7dddd}} h1{{margin:0 0 .5rem;font:700 clamp(2rem,5vw,4.5rem)/1.02 Georgia,serif}} h2{{margin:3rem 0 1rem;font:700 2rem/1.1 Georgia,serif}} h3{{font:700 1.35rem/1.2 Georgia,serif}}
     main{{width:min(1500px,94vw);margin:auto;padding-bottom:5rem}} nav{{position:sticky;top:0;z-index:5;display:flex;gap:.7rem;align-items:flex-start;flex-wrap:wrap;padding:.8rem max(3vw,1rem);background:#fbfaf6ee;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}}
@@ -275,12 +275,18 @@ def render_report(analysis: dict[str, Any]) -> str:
 <footer>Généré par dicethrone-helper {html.escape(analysis['engine']['version'])} · aucune simulation aléatoire</footer>
 <script>
 (() => {{
+  const navigation = document.querySelector('nav');
   const rollInput = document.querySelector('#roll-filter');
   const abilityInput = document.querySelector('#ability-filter');
   const upgradedInput = document.querySelector('#upgraded-filter');
   const secondRoll = document.querySelector('#second-roll');
   const secondSections = [...secondRoll.querySelectorAll('.ability-section')];
   const originalSecondOrder = new Map(secondSections.map((section, index) => [section, index]));
+  const updateAnchorOffset = () => document.documentElement.style.setProperty(
+    '--anchor-offset', `${{navigation.getBoundingClientRect().height + 16}}px`
+  );
+  new ResizeObserver(updateAnchorOffset).observe(navigation);
+  updateAnchorOffset();
   const digits = value => (value.match(/[1-6]/g) || []).slice(0, 5);
   const canonicalRoll = value => {{
     const faces = digits(value);
@@ -307,7 +313,7 @@ def render_report(analysis: dict[str, Any]) -> str:
       abilityInput.value = '';
     }}
     const ability = abilityInput.value;
-    document.body.classList.toggle('is-filtering', rollInput.value.length > 0);
+    document.body.classList.toggle('is-filtering', Boolean(roll));
     document.body.classList.toggle('include-upgraded', includeUpgraded);
     abilityInput.querySelectorAll('[data-upgraded="true"]').forEach(option => {{
       option.disabled = !includeUpgraded;
@@ -343,7 +349,12 @@ def render_report(analysis: dict[str, Any]) -> str:
   }};
   rollInput.addEventListener('input', () => {{
     rollInput.value = digits(rollInput.value).join('');
-    scheduleApply();
+    window.clearTimeout(applyTimer);
+    if (rollInput.value.length === 5) {{
+      scheduleApply();
+    }} else if (document.body.classList.contains('is-filtering')) {{
+      scheduleApply();
+    }}
   }});
   abilityInput.addEventListener('change', () => {{
     window.clearTimeout(applyTimer);
