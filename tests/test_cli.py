@@ -31,7 +31,7 @@ class CliTests(unittest.TestCase):
             )
 
             self.assertTrue(analysis_path.is_file())
-            self.assertIn("Aide à la relance · CLI", report_path.read_text(encoding="utf-8"))
+            self.assertIn("<title>CLI</title>", report_path.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

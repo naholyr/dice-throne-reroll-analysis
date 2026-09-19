@@ -19,11 +19,18 @@ class ReportTests(unittest.TestCase):
 
         report = render_report(analysis)
 
-        self.assertIn("Personnage &lt;test&gt;", report)
+        self.assertIn("<title>Personnage &lt;test&gt;</title>", report)
+        self.assertIn("<h1>Personnage &lt;test&gt;</h1>", report)
+        self.assertNotIn("Aide à la relance", report)
         self.assertIn("Capacité &amp; test", report)
         self.assertIn("Après le premier lancer", report)
         self.assertIn("Après le deuxième lancer", report)
-        self.assertIn("252 lancers canoniques", report)
+        self.assertIn(
+            "Analyse exhaustive des probabilités d’activation des capacités : "
+            "Consultez la synthèse globale ou saisissez le résultat de vos cinq dés, "
+            "puis consultez « Premier lancer » ou « Deuxième lancer » selon l’étape du tour.",
+            report,
+        )
         self.assertIn('placeholder="ex. 12346"', report)
         self.assertIn("Saisir cinq chiffres, dans n’importe quel ordre", report)
         self.assertIn('class="section-links"', report)

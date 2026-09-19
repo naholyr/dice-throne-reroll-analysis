@@ -229,7 +229,7 @@ def render_report(analysis: dict[str, Any]) -> str:
         f'{html.escape(ability["name"])}</option>'
         for ability in abilities
     )
-    title = f"Aide à la relance · {html.escape(character['name'])}"
+    title = html.escape(character["name"])
     return f"""<!doctype html>
 <html lang="fr">
 <head>
@@ -255,7 +255,7 @@ def render_report(analysis: dict[str, Any]) -> str:
   </style>
 </head>
 <body>
-<header><h1>{title}</h1><p>Analyse exhaustive des 252 lancers canoniques. Les probabilités sont exactes et chaque décision maximise d’abord la réussite au plus tard au troisième lancer, puis la rapidité moyenne.</p></header>
+<header><h1>{title}</h1><p>Analyse exhaustive des probabilités d’activation des capacités : Consultez la synthèse globale ou saisissez le résultat de vos cinq dés, puis consultez « Premier lancer » ou « Deuxième lancer » selon l’étape du tour.</p></header>
 <nav aria-label="Filtres du rapport">
   <label>Lancer <input id="roll-filter" inputmode="numeric" pattern="[1-6]{{5}}" placeholder="ex. 12346" aria-describedby="roll-hint"><span id="roll-hint" class="filter-hint">Saisir cinq chiffres, dans n’importe quel ordre</span></label>
   <label>Capacité <select id="ability-filter"><option value="">Toutes</option>{ability_options}</select></label>
