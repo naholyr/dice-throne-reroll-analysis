@@ -1,7 +1,25 @@
 {
   "schema_version": 1,
   "name": "Chasseresse",
-  "symbols": "AABBCD",
+  "symbols": {
+    "distribution": "AABBCD",
+    "A": {
+      "color": "#CDD582",
+      "name": "Lance"
+    },
+    "B": {
+      "color": "#F9F6FB",
+      "name": "Griffe"
+    },
+    "C": {
+      "color": "#BBBDDA",
+      "name": "Âme liée"
+    },
+    "D": {
+      "color": "#DC9335",
+      "name": "Dents-de-sabre"
+    }
+  },
   "abilities": [
     { "name": "Bestiale 1", "symbols": "AAA" },
     { "name": "Bestiale 2", "symbols": "AAAA" },

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "Miles Morales : Spider-Man",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#A3D4DD",
+      "name": "Thwip"
+    },
+    "B": {
+      "color": "#F3F0F7",
+      "name": "Toile"
+    },
+    "C": {
+      "color": "#E83438",
+      "name": "Araignée"
+    }
+  },
+  "abilities": [
+    { "name": "Allonge 1", "symbols": "AAA" },
+    { "name": "Allonge 2", "symbols": "AAAA" },
+    { "name": "Allonge 3", "symbols": "AAAAA" },
+    { "name": "Grimpe-murs", "symbols": "AABBB" },
+    { "name": "C-C-C-Combo", "symbols": "AACC" },
+    { "name": "Jet de toile *", "symbols": "BBC" },
+    { "name": "Réflexes d'araignée", "symbols": "ABBC" },
+    { "name": "Allonge venimeuse", "symbols": "CCCC" },
+    { "name": "Enchainement de combos *", "symbols": "CCC" },
+    { "name": "Piège 1", "straight": "small" },
+    { "name": "Piège 2", "straight": "large" },
+    { "name": "Exsanguination ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "name": "Paladin",
+  "symbols": {
+    "distribution": "AABBCD",
+    "A": {
+      "color": "#DDBA3E",
+      "name": "Épée"
+    },
+    "B": {
+      "color": "#ABC0DB",
+      "name": "Haume"
+    },
+    "C": {
+      "color": "#EF4A46",
+      "name": "Vie"
+    },
+    "D": {
+      "color": "#FAF6FC",
+      "name": "Prière"
+    }
+  },
+  "abilities": [
+    { "name": "Combat vertueux", "symbols": "AAABB" },
+    { "name": "Inébranlable *", "symbols": "AAB" },
+    { "name": "Riposte", "symbols": "BBBD" },
+    { "name": "Récompense *", "symbols": "ABCD" },
+    { "name": "Puissante prière", "symbols": "AAAD" },
+    { "name": "Posture offensive *", "symbols": "AAD" },
+    { "name": "Lumière sacrée", "symbols": "CC" },
+    { "name": "Prière du juste", "symbols": "DDDD" },
+    { "name": "Prospérité *", "symbols": "DDD" },
+    { "name": "Attaque sacrée 1", "straight": "small" },
+    { "name": "Attaque sacrée 2", "straight": "large" },
+    { "name": "Foi inébranlable ! (ultime)", "symbols": "DDDDD" }
+  ]
+}

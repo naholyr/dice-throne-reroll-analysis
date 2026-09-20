@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "name": "Gambit",
+  "symbols": {
+    "distribution": "AAABCD",
+    "A": {
+      "color": "#633C7E",
+      "name": "Bâton"
+    },
+    "B": {
+      "color": "#D83D28",
+      "name": "Cœur/Carreau"
+    },
+    "C": {
+      "color": "#010001",
+      "name": "Pique/Trêfle"
+    },
+    "D": {
+      "color": "#DE8B29",
+      "name": "Supercharge"
+    }
+  },
+  "abilities": [
+    { "name": "Bō 1", "symbols": "AAA" },
+    { "name": "Bō 2", "symbols": "AAAA" },
+    { "name": "Bō 3", "symbols": "AAAAA" },
+    { "name": "Maîtrise du Bō *", "symbols": "AAAD" },
+    { "name": "Impassible", "symbols": "ABB" },
+    { "name": "Ma chère *", "symbols": "BBB" },
+    { "name": "Bō-Jutsu", "symbols": "AACC" },
+    { "name": "Roublard *", "symbols": "BBCC" },
+    { "name": "Tour de passe-passe", "symbols": "AABD" },
+    { "name": "Tapis *", "symbols": "ABCD" },
+    { "name": "Cajun déchaîné", "symbols": "DDDD" },
+    { "name": "Cajun furieux *", "symbols": "DDD" },
+    { "name": "Joueur professionnel 1", "straight": "small" },
+    { "name": "Joueur professionnel 2", "straight": "large" },
+    { "name": "Le diable blanc ! (ultime)", "symbols": "DDDDD" }
+  ]
+}
