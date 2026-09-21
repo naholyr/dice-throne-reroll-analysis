@@ -33,11 +33,15 @@ Pour générer tous les rapports et une page d'accueil prête à déployer :
 
 Le site statique est écrit dans `build/` avec sa page d'entrée `index.html`.
 
-Le fichier d'analyse n'est recalculé que s'il manque ou si le JSON du personnage
-est plus récent. Le rapport HTML est toujours régénéré puis ouvert avec `open`.
+Le fichier d'analyse n'est recalculé que s'il manque, si le JSON du personnage
+est plus récent ou si le moteur Python a changé. Le rapport HTML est toujours
+régénéré puis ouvert avec `open`.
 Les capacités dont le nom se termine par `*` sont ignorées par défaut dans le
 rapport ; cochez « Inclure les capacités améliorées » pour les réintégrer dans
 les classements et les probabilités d'issues accidentelles.
+
+Lorsque plusieurs relances donnent la même chance d'obtenir la capacité visée,
+le calculateur privilégie celle qui minimise la probabilité finale de whiff.
 
 ### Commandes manuelles
 

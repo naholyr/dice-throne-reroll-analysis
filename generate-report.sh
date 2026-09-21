@@ -208,6 +208,15 @@ run_helper() {
   fi
 }
 
+analysis_is_stale() {
+  local analysis_file="$1" character_file="$2" newer_source
+  if [[ ! -f "$analysis_file" || "$analysis_file" -ot "$character_file" ]]; then
+    return 0
+  fi
+  newer_source=$(find "$PROJECT_DIR/src" -type f -name '*.py' -newer "$analysis_file" -print -quit)
+  [[ -n "$newer_source" ]]
+}
+
 update_website() {
   rm -f "$WEBSITE_DIR"/*.html
   cp "$BUILD_DIR"/*.html "$WEBSITE_DIR"/
@@ -279,7 +288,7 @@ if [[ "${1:-}" == "--all" ]]; then
     character_file="$CHARACTERS_DIR/$character_name.json"
     analysis_file="$BUILD_DIR/$character_name.analysis.json"
     report_file="$BUILD_DIR/$character_name.report.html"
-    if [[ ! -f "$analysis_file" || "$analysis_file" -ot "$character_file" ]]; then
+    if analysis_is_stale "$analysis_file" "$character_file"; then
       say "$character_name : calcul de l'analyse exacte."
       run_helper analyze "$character_file" --output "$analysis_file"
     else
@@ -317,7 +326,7 @@ analysis_file="$BUILD_DIR/$character_name.analysis.json"
 report_file="$BUILD_DIR/$character_name.report.html"
 
 stage "Analyse probabiliste" 1
-if [[ ! -f "$analysis_file" || "$analysis_file" -ot "$character_file" ]]; then
+if analysis_is_stale "$analysis_file" "$character_file"; then
   say "Le cache est absent ou obsolète : calcul de l'analyse exacte."
   run_helper analyze "$character_file" --output "$analysis_file"
 else

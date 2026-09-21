@@ -104,6 +104,30 @@ class AnalysisTests(unittest.TestCase):
             },
         )
 
+    def test_equal_target_chances_prefer_the_action_with_the_lowest_whiff(self) -> None:
+        character = CharacterConfig.from_dict(
+            {
+                "schema_version": 1,
+                "name": "Départage contrôlé",
+                "symbols": symbol_config("ABCDEF"),
+                "abilities": [
+                    {"name": "Petite suite", "straight": "small"},
+                    {"name": "Fiesta", "straight": "large"},
+                ],
+            }
+        )
+
+        analysis = analyze_character(character)
+        state = next(item for item in analysis["states"] if item["dice"] == [1, 2, 3, 4, 6])
+        policy = state["after_second_roll"]["fiesta"]
+
+        self.assertEqual(policy["probability"], {"numerator": 1, "denominator": 6})
+        self.assertEqual(policy["actions"][0]["reroll_faces"], [6])
+        self.assertEqual(
+            policy["reroll_outcomes"]["nothing"],
+            {"numerator": 0, "denominator": 1},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
