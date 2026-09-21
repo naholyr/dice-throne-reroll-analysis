@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "Wolverine",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#5A5053",
+      "name": "Griffe"
+    },
+    "B": {
+      "color": "#B75147",
+      "name": "Adamantium"
+    },
+    "C": {
+      "color": "#3E318C",
+      "name": "Masque"
+    }
+  },
+  "abilities": [
+    { "name": "Griffes d'adamantium 1", "symbols": "AAA" },
+    { "name": "Griffes d'adamantium 2", "symbols": "AAAA" },
+    { "name": "Griffes d'adamantium 3", "symbols": "AAAAA"},
+    { "name": "Facteur guérisseur", "symbols": "BBBC" },
+    { "name": "Régénération", "symbols": "AACC" },
+    { "name": "Chasseur", "symbols": "AABBB" },
+    { "name": "Barrage 1", "straight": "small" },
+    { "name": "Barrage 2", "straight": "large" },
+    { "name": "Menace extrême", "symbols": "AAACC" },
+    { "name": "Puissance de niveau neuf", "symbols": "CCCC" },
+    { "name": "Montée de niveau *", "symbols": "CCC" },
+    { "name": "Rage du Berserker ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

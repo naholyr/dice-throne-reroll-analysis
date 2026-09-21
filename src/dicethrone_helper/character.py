@@ -15,7 +15,7 @@ class ConfigError(ValueError):
 def _slugify(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value)
     ascii_value = normalized.encode("ascii", "ignore").decode("ascii")
-    return re.sub(r"[^a-z0-9]+", "-", ascii_value.lower()).strip("-")
+    return re.sub(r"[^a-z0-9]+", "-", ascii_value.lower())
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,17 +66,32 @@ class Ability:
             kind = "straight"
 
         identifier = raw.get("id", _slugify(name))
-        if not isinstance(identifier, str) or not re.fullmatch(r"[a-z0-9-]+", identifier):
-            raise ConfigError(
-                f"L'identifiant de {name!r} doit utiliser a-z, 0-9 et des tirets."
-            )
         return cls(name=name, kind=kind, target=target, identifier=identifier)
+
+
+@dataclass(frozen=True, slots=True)
+class Symbol:
+    color: str
+    name: str
+
+    @classmethod
+    def from_dict(cls, identifier: str, raw: Any) -> Symbol:
+        if not isinstance(raw, dict):
+            raise ConfigError(f"Le symbole {identifier!r} doit être un objet JSON.")
+        color = raw.get("color")
+        name = raw.get("name")
+        if not isinstance(color, str) or not color.strip():
+            raise ConfigError(f"Le symbole {identifier!r} doit avoir une couleur non vide.")
+        if not isinstance(name, str) or not name.strip():
+            raise ConfigError(f"Le symbole {identifier!r} doit avoir un nom non vide.")
+        return cls(color=color, name=name)
 
 
 @dataclass(frozen=True, slots=True)
 class CharacterConfig:
     name: str
-    symbols: str
+    distribution: str
+    symbols: dict[str, Symbol]
     abilities: tuple[Ability, ...]
     schema_version: int = 1
 
@@ -89,28 +104,42 @@ class CharacterConfig:
         name = raw.get("name")
         if not isinstance(name, str) or not name.strip():
             raise ConfigError("Le personnage doit avoir un nom non vide.")
-        symbols = raw.get("symbols")
-        if not isinstance(symbols, str) or len(symbols) != 6:
-            raise ConfigError("'symbols' doit contenir exactement 6 caractères.")
-        if any(not symbol.isalpha() or not symbol.isupper() for symbol in symbols):
+        raw_symbols = raw.get("symbols")
+        if not isinstance(raw_symbols, dict):
+            raise ConfigError("'symbols' doit être un objet JSON.")
+        distribution = raw_symbols.get("distribution")
+        if not isinstance(distribution, str) or len(distribution) != 6:
+            raise ConfigError(
+                "'symbols.distribution' doit contenir exactement 6 caractères."
+            )
+        if any(not symbol.isalpha() or not symbol.isupper() for symbol in distribution):
             raise ConfigError("Les symboles doivent être des lettres majuscules.")
+        available_symbols = frozenset(distribution)
+        symbols = {
+            symbol: Symbol.from_dict(symbol, raw_symbols.get(symbol))
+            for symbol in dict.fromkeys(distribution)
+        }
 
         raw_abilities = raw.get("abilities")
         if not isinstance(raw_abilities, list) or not raw_abilities:
             raise ConfigError("Le personnage doit avoir au moins une capacité.")
-        available_symbols = frozenset(symbols)
         abilities = tuple(
             Ability.from_dict(ability, available_symbols) for ability in raw_abilities
         )
         identifiers = [ability.identifier for ability in abilities]
         if len(identifiers) != len(set(identifiers)):
             raise ConfigError("Les identifiants de capacités doivent être uniques.")
-        return cls(name=name, symbols=symbols, abilities=abilities)
+        return cls(
+            name=name,
+            distribution=distribution,
+            symbols=symbols,
+            abilities=abilities,
+        )
 
     def symbol_for_face(self, face: int) -> str:
         if not 1 <= face <= 6:
             raise ValueError("Une face doit être comprise entre 1 et 6.")
-        return self.symbols[face - 1]
+        return self.distribution[face - 1]
 
     def to_dict(self) -> dict[str, Any]:
         abilities: list[dict[str, Any]] = []
@@ -125,7 +154,13 @@ class CharacterConfig:
         return {
             "schema_version": self.schema_version,
             "name": self.name,
-            "symbols": self.symbols,
+            "symbols": {
+                "distribution": self.distribution,
+                **{
+                    identifier: {"color": symbol.color, "name": symbol.name}
+                    for identifier, symbol in self.symbols.items()
+                },
+            },
             "abilities": abilities,
         }
 

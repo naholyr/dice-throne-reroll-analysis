@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dicethrone_helper.analysis import analyze_character, write_analysis
 from dicethrone_helper.character import CharacterConfig
+from tests.helpers import symbol_config
 
 
 class AnalysisTests(unittest.TestCase):
@@ -14,7 +15,7 @@ class AnalysisTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Probabilités contrôlées",
-                "symbols": "ABBBBB",
+                "symbols": symbol_config("ABBBBB"),
                 "abilities": [{"name": "Cinq A", "symbols": "AAAAA"}],
             }
         )
@@ -49,7 +50,7 @@ class AnalysisTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Minimal",
-                "symbols": "AAAAAA",
+                "symbols": symbol_config("AAAAAA"),
                 "abilities": [{"name": "Un A", "symbols": "A"}],
             }
         )
@@ -68,7 +69,7 @@ class AnalysisTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Issues contrôlées",
-                "symbols": "ABCDEF",
+                "symbols": symbol_config("ABCDEF"),
                 "abilities": [
                     {"name": "Cinq A", "symbols": "AAAAA"},
                     {"name": "Un B", "symbols": "B"},
@@ -96,7 +97,7 @@ class AnalysisTests(unittest.TestCase):
                         "probability": {"numerator": 1, "denominator": 6},
                     },
                     {
-                        "ability_id": "un-c",
+                        "ability_id": "un-c-",
                         "probability": {"numerator": 1, "denominator": 6},
                     },
                 ],

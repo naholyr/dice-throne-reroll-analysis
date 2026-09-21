@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "name": "Deadpool",
+  "symbols": {
+    "distribution": "AAABCD",
+    "A": {
+      "color": "#E65149",
+      "name": "Pan"
+    },
+    "B": {
+      "color": "#CEC0BD",
+      "name": "Couteau"
+    },
+    "C": {
+      "color": "#C4DFF4",
+      "name": "Blague"
+    },
+    "D": {
+      "color": "#FAFBFA",
+      "name": "Masque"
+    }
+  },
+  "abilities": [
+    { "name": "Pistodoigts 1", "symbols": "AAAA" },
+    { "name": "Pistodoigts 2", "symbols": "AAAAA" },
+    { "name": "Lancer de couteau", "symbols": "AABB" },
+    { "name": "Mon beau surin", "symbols": "BBBBB" },
+    { "name": "???? *", "symbols": "AACC" },
+    { "name": "Trou de donut", "symbols": "CCC" },
+    { "name": "Réputation à tenir", "symbols": "ABCD" },
+    { "name": "Plan B *", "symbols": "BBCC" },
+    { "name": "Canon à tacos", "straight": "small" },
+    { "name": "Fiesta", "straight": "large" },
+    { "name": "Treize à la douzaine *", "symbols": "AACC" },
+    { "name": "Mercenaire disert", "symbols": "DDDD" },
+    { "name": "Oh un filet de sécurité *", "symbols": "DDD" },
+    { "name": "Quatrième mur ! (ultime)", "symbols": "DDDDD" }
+  ]
+}

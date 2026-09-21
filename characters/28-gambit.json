@@ -4,7 +4,7 @@
   "symbols": {
     "distribution": "AAABCD",
     "A": {
-      "color": "#633C7E",
+      "color": "#734C8E",
       "name": "Bâton"
     },
     "B": {
@@ -12,7 +12,7 @@
       "name": "Cœur/Carreau"
     },
     "C": {
-      "color": "#010001",
+      "color": "#111011",
       "name": "Pique/Trêfle"
     },
     "D": {

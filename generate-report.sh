@@ -246,7 +246,7 @@ choose_character() {
 }
 
 if (( $# > 1 )); then
-  printf 'Usage: %s [personnage]\n' "$(basename "$0")" >&2
+  printf 'Usage: %s [personnage|--all]\n' "$(basename "$0")" >&2
   exit 2
 fi
 
@@ -263,6 +263,32 @@ for file in "${character_files[@]}"; do
   name=$(basename "$file")
   character_names+=("${name%.json}")
 done
+
+if [[ "${1:-}" == "--all" ]]; then
+  mkdir -p "$BUILD_DIR"
+  analysis_files=()
+  stage "Génération du site" 1
+  for character_name in "${character_names[@]}"; do
+    character_file="$CHARACTERS_DIR/$character_name.json"
+    analysis_file="$BUILD_DIR/$character_name.analysis.json"
+    report_file="$BUILD_DIR/$character_name.report.html"
+    if [[ ! -f "$analysis_file" || "$analysis_file" -ot "$character_file" ]]; then
+      say "$character_name : calcul de l'analyse exacte."
+      run_helper analyze "$character_file" --output "$analysis_file"
+    else
+      say "$character_name : réutilisation de l'analyse à jour."
+    fi
+    run_helper report "$analysis_file" --output "$report_file"
+    analysis_files+=("$analysis_file")
+  done
+
+  index_file="$BUILD_DIR/index.html"
+  run_helper index "${analysis_files[@]}" --output "$index_file"
+  open_url "$index_file"
+  finish
+  say "Site prêt : $index_file"
+  exit 0
+fi
 
 stage "Choix du personnage" 0
 if (( $# == 1 )); then

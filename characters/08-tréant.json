@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "name": "Tréant",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#CBB6A0",
+      "name": "Branche"
+    },
+    "B": {
+      "color": "B5D275",
+      "name": "Feuille"
+    },
+    "C": {
+      "color": "#ECA943",
+      "name": "Esprit"
+    }
+  },
+  "abilities": [
+    { "name": "Écharde 1", "symbols": "AAA" },
+    { "name": "Écharde 2", "symbols": "AAAA" },
+    { "name": "Écharde 3", "symbols": "AAAAA" },
+    { "name": "Entretien", "symbols": "BBCC" },
+    { "name": "Culture *", "symbols": "AACC" },
+    { "name": "Luxuriance", "symbols": "AABBB" },
+    { "name": "Plantation *", "symbols": "ABB" },
+    { "name": "Lianes vengeresses", "straight": "small" },
+    { "name": "Amère racine *", "symbols": "AAA" },
+    { "name": "Appel de la forêt", "straight": "large" },
+    { "name": "Capture *", "symbols": "AACC" },
+    { "name": "Emprise de la nature", "symbols": "CCCC" },
+    { "name": "Bénédiction de la nature *", "symbols": "CCC" },
+    { "name": "Réveil de la forêt ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

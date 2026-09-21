@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "Duelliste",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#264069",
+      "name": "Lame"
+    },
+    "B": {
+      "color": "#101010",
+      "name": "Botte"
+    },
+    "C": {
+      "color": "#6C2872",
+      "name": "Percée"
+    }
+  },
+  "abilities": [
+    { "name": "Escarmouche 1", "symbols": "AAA" },
+    { "name": "Escarmouche 2", "symbols": "AAAA" },
+    { "name": "Escarmouche 3", "symbols": "AAAAA" },
+    { "name": "Attaque feinte", "symbols": "AACC" },
+    { "name": "Balestra", "symbols": "AABBB" },
+    { "name": "Pieds légers *", "symbols": "BBB" },
+    { "name": "Coup d'estoc 1", "straight": "small" },
+    { "name": "Coup d'estoc 2", "straight": "large" },
+    { "name": "En garde", "symbols": "BBBC" },
+    { "name": "Tempête d'acier", "symbols": "CCCC" },
+    { "name": "Vents tranchants *", "symbols": "CCC" },
+    { "name": "Maître de l'épée ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

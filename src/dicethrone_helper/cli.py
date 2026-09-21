@@ -7,7 +7,7 @@ from typing import Sequence
 
 from .analysis import analyze_character, write_analysis
 from .character import ConfigError, load_character
-from .report import load_analysis, write_report
+from .report import load_analysis, write_index, write_report
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -28,6 +28,12 @@ def _parser() -> argparse.ArgumentParser:
     )
     report.add_argument("analysis", type=Path, help="Artefact JSON produit par analyze.")
     report.add_argument("--output", "-o", type=Path, required=True)
+
+    index = subparsers.add_parser(
+        "index", help="Générer la page d'accueil d'un ensemble de rapports."
+    )
+    index.add_argument("analyses", nargs="+", type=Path)
+    index.add_argument("--output", "-o", type=Path, required=True)
     return parser
 
 
@@ -39,10 +45,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"Analyse exacte de {character.name}…")
             write_analysis(analyze_character(character), args.output)
             print(f"Artefact écrit dans {args.output}")
-        else:
+        elif args.command == "report":
             analysis = load_analysis(args.analysis)
             write_report(analysis, args.output)
             print(f"Rapport écrit dans {args.output}")
+        else:
+            analyses = [(path, load_analysis(path)) for path in args.analyses]
+            write_index(analyses, args.output)
+            print(f"Index écrit dans {args.output}")
     except (ConfigError, ValueError, OSError) as error:
         print(f"Erreur: {error}", file=sys.stderr)
         return 2

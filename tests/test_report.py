@@ -3,6 +3,7 @@ import unittest
 from dicethrone_helper.analysis import analyze_character
 from dicethrone_helper.character import CharacterConfig
 from dicethrone_helper.report import render_report
+from tests.helpers import symbol_config
 
 
 class ReportTests(unittest.TestCase):
@@ -11,7 +12,10 @@ class ReportTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Personnage <test>",
-                "symbols": "AAAAAA",
+                "symbols": {
+                    "distribution": "AAAAAA",
+                    "A": {"color": "#c0ffee", "name": "Symbole & test"},
+                },
                 "abilities": [{"name": "Capacité & test", "symbols": "A"}],
             }
         )
@@ -21,6 +25,15 @@ class ReportTests(unittest.TestCase):
 
         self.assertIn("<title>Personnage &lt;test&gt;</title>", report)
         self.assertIn("<h1>Personnage &lt;test&gt;</h1>", report)
+        self.assertIn(
+            '<p class="symbol-legend"><span class="symbol-key symbol-A">'
+            '<span class="symbol symbol-A">A</span>: '
+            'Symbole &amp; test</span></p>',
+            report,
+        )
+        self.assertIn("text-shadow: -1px -1px 0 #000", report)
+        self.assertIn(".symbol-A{color:#c0ffee}", report)
+        self.assertIn('<span class="symbol symbol-A">A</span>', report)
         self.assertNotIn("Aide à la relance", report)
         self.assertIn("Capacité &amp; test", report)
         self.assertIn("Après le premier lancer", report)
@@ -79,7 +92,7 @@ class ReportTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Issues contrôlées",
-                "symbols": "ABCDEF",
+                "symbols": symbol_config("ABCDEF"),
                 "abilities": [
                     {"name": "Cinq A", "symbols": "AAAAA"},
                     {"name": "Un B", "symbols": "B"},

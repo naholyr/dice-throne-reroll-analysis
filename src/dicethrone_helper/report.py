@@ -73,8 +73,19 @@ def _upgraded_attribute(ability: dict[str, Any]) -> str:
     return str(_is_upgraded(ability)).lower()
 
 
-def _items_label(items: list[Any]) -> str:
-    return " · ".join(html.escape(str(item)) for item in items) if items else "—"
+def _symbol_label(identifier: str) -> str:
+    escaped_identifier = html.escape(identifier)
+    return (
+        f'<span class="symbol symbol-{escaped_identifier}">{escaped_identifier}</span>'
+    )
+
+
+def _items_label(items: list[Any], mode: str) -> str:
+    if not items:
+        return "—"
+    if mode == "symbols":
+        return "".join(_symbol_label(str(item)) for item in items)
+    return "".join(html.escape(str(item)) for item in items)
 
 
 def _action_label(policy: dict[str, Any]) -> str:
@@ -85,12 +96,14 @@ def _action_label(policy: dict[str, Any]) -> str:
         return '<span class="impossible">Aucune relance disponible</span>'
     primary = actions[0]
     label = (
-        f'<span class="keep">Garder&nbsp;: {_items_label(primary["keep"])}</span>'
-        f'<span class="reroll">Relancer&nbsp;: {_items_label(primary["reroll"])}</span>'
+        f'<span class="keep">Garder&nbsp;: {_items_label(primary["keep"], primary["mode"])}</span>'
+        f' · '
+        f'<span class="reroll">Relancer&nbsp;: {_items_label(primary["reroll"], primary["mode"])}</span>'
     )
     if len(actions) > 1:
         alternatives = "; ".join(
-            f"garder {_items_label(action['keep'])}, relancer {_items_label(action['reroll'])}"
+            f"garder {_items_label(action['keep'], action['mode'])}, "
+            f"relancer {_items_label(action['reroll'], action['mode'])}"
             for action in actions[1:]
         )
         label += (
@@ -161,7 +174,9 @@ def _reroll_outcomes_label(
 
 
 def _ability_row(
-    rank: int, ability: dict[str, str], policy: dict[str, Any]
+    rank: int,
+    ability: dict[str, str],
+    policy: dict[str, Any],
 ) -> str:
     return (
         f'<tr class="ability-row" data-ability="{html.escape(ability["id"])}" '
@@ -187,6 +202,12 @@ def render_report(analysis: dict[str, Any]) -> str:
     if analysis.get("schema_version") != 1:
         raise ValueError("Version d'artefact d'analyse non supportée.")
     character = analysis["character"]
+    symbol_config = character["symbols"]
+    symbol_distribution = symbol_config["distribution"]
+    symbols = {
+        identifier: symbol_config[identifier]
+        for identifier in dict.fromkeys(symbol_distribution)
+    }
     abilities = character["abilities"]
     ability_by_id = {ability["id"]: ability for ability in abilities}
     global_by_id = {item["ability_id"]: item for item in analysis["global"]}
@@ -263,6 +284,15 @@ def render_report(analysis: dict[str, Any]) -> str:
         f'{html.escape(ability["name"])}</option>'
         for ability in abilities
     )
+    symbol_legend = "<span class=\"symbol-separator\"> | </span>".join(
+        f'<span class="symbol-key symbol-{identifier}">'
+        f'{_symbol_label(identifier)}: {html.escape(symbol["name"])}</span>'
+        for identifier, symbol in symbols.items()
+    )
+    symbol_styles = "".join(
+        f'.symbol-{identifier}{{color:{html.escape(symbol["color"])}}}'
+        for identifier, symbol in symbols.items()
+    )
     title = html.escape(character["name"])
     return f"""<!doctype html>
 <html lang="fr">
@@ -275,7 +305,7 @@ def render_report(analysis: dict[str, Any]) -> str:
     :root{{--ink:#182022;--muted:#637174;--paper:#fbfaf6;--card:#fff;--line:#dfe3dc;--accent:#9f2f2f;--accent-soft:#f6e8e2;--good:#246b4b;--shadow:0 8px 30px #17201c10}}
     *{{box-sizing:border-box}} html{{scroll-behavior:smooth;scroll-padding-top:var(--anchor-offset,6rem)}} body{{margin:0;background:var(--paper);color:var(--ink);font-family:"Roboto Condensed",sans-serif;font-size:15px;line-height:1.45}}
     header{{padding:3.5rem max(5vw,1.25rem) 2.5rem;background:linear-gradient(135deg,#232b2b,#3f2725);color:#fff}}
-    header p{{max-width:70ch;color:#e7dddd}} h1,h2,h3{{font-family:"League Spartan",sans-serif;font-weight:900;text-transform:uppercase;letter-spacing:-.02em}} h1{{margin:0 0 .5rem;font-size:clamp(2rem,5vw,4.5rem);line-height:1.02}} h2{{margin:3rem 0 1rem;font-size:2rem;line-height:1.1}} h3{{font-size:1.35rem;line-height:1.2}}
+    header p{{max-width:70ch;color:#e7dddd}} h1,h2,h3{{font-family:"League Spartan",sans-serif;font-weight:900;text-transform:uppercase;letter-spacing:-.02em}} h1{{margin:0 0 .5rem;font-size:clamp(2rem,5vw,4.5rem);line-height:1.02}} h2{{margin:3rem 0 1rem;font-size:2rem;line-height:1.1}} h3{{font-size:1.35rem;line-height:1.2}} .symbol,.symbol-key{{text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000}} .symbol{{font-weight:900; font-size:1.1em; padding: 0 1px}} .symbol-legend{{font-family:"League Spartan",sans-serif;font-size:1.15rem;font-weight:800}} .symbol-separator{{color:#e7dddd;-webkit-text-stroke:0}} {symbol_styles}
     main{{width:min(1500px,94vw);margin:auto;padding-bottom:5rem}} nav{{position:sticky;top:0;z-index:5;display:flex;gap:.7rem;align-items:flex-start;flex-wrap:wrap;padding:.8rem max(3vw,1rem);background:#fbfaf6ee;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}}
     nav label{{display:grid;gap:.2rem;color:var(--muted);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}} .filter-hint{{max-width:18rem;font-size:.7rem;font-weight:500;text-transform:none;letter-spacing:0}} input,select{{font:inherit;padding:.55rem .7rem;border:1px solid #bfc8c2;border-radius:.45rem;background:#fff}} nav .upgrade-toggle{{display:flex;align-items:center;gap:.45rem;padding-top:1.65rem;white-space:nowrap;text-transform:none;letter-spacing:0}} nav .upgrade-toggle input{{width:1rem;height:1rem;margin:0;padding:0;accent-color:var(--accent)}} .section-links{{display:flex;gap:.7rem;padding-top:1.33rem;white-space:nowrap}} nav a{{color:var(--accent);font-weight:700;padding:.55rem}}
     .intro{{max-width:80ch;color:var(--muted)}} .summary-table,.roll-card,.ability-section{{background:var(--card);box-shadow:var(--shadow);border:1px solid var(--line);border-radius:.65rem}}
@@ -290,7 +320,7 @@ def render_report(analysis: dict[str, Any]) -> str:
   </style>
 </head>
 <body>
-<header><h1>{title}</h1><p>Analyse exhaustive des probabilités d’activation des capacités : Consultez la synthèse globale ou saisissez le résultat de vos cinq dés, puis consultez « Premier lancer » ou « Deuxième lancer » selon l’étape du tour.</p></header>
+<header><h1>{title}</h1><p class="symbol-legend">{symbol_legend}</p><p>Analyse exhaustive des probabilités d’activation des capacités : Consultez la synthèse globale ou saisissez le résultat de vos cinq dés, puis consultez « Premier lancer » ou « Deuxième lancer » selon l’étape du tour.</p></header>
 <nav aria-label="Filtres du rapport">
   <label>Lancer <input id="roll-filter" inputmode="numeric" pattern="[1-6]{{5}}" placeholder="ex. 12346" aria-describedby="roll-hint"><span id="roll-hint" class="filter-hint">Saisir cinq chiffres, dans n’importe quel ordre</span></label>
   <label>Capacité <select id="ability-filter"><option value="">Toutes</option>{ability_options}</select></label>
@@ -302,7 +332,7 @@ def render_report(analysis: dict[str, Any]) -> str:
     <table class="summary-table"><thead><tr><th class="rank">Rang</th><th>Capacité</th><th>Chance finale</th><th>Réussite par lancer</th></tr></thead><tbody>{''.join(global_rows)}</tbody></table>
   </section>
   <section id="first-roll"><h2>Après le premier lancer</h2><p class="intro">Chaque lancer présente les capacités de la plus sûre à la moins sûre. La stratégie tient déjà compte de la décision optimale qui sera prise après le deuxième lancer.</p>
-    <p class="legend">Pour une suite, les décisions utilisent les numéros. Pour une combinaison symbolique, elles utilisent les symboles propres au personnage ({html.escape(character['symbols'])}).</p>
+    <p class="legend">Pour une suite, les décisions utilisent les numéros. Pour une combinaison symbolique, elles utilisent les symboles propres au personnage ({''.join(_symbol_label(identifier) for identifier in symbol_distribution)}).</p>
     <div class="roll-grid">{''.join(first_roll_sections)}</div>
   </section>
   <section id="second-roll"><h2>Après le deuxième lancer</h2><p class="intro">Index complet avec une seule relance restante, regroupé par capacité poursuivie. Les issues indiquées correspondent à la relance optimale affichée. Elles peuvent se cumuler&nbsp;: un même résultat peut activer plusieurs capacités.</p>{''.join(second_roll_sections)}</section>
@@ -421,3 +451,53 @@ def write_report(analysis: dict[str, Any], destination: str | Path) -> None:
     output = Path(destination)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(render_report(analysis), encoding="utf-8")
+
+
+def render_index(analyses: list[tuple[Path, dict[str, Any]]]) -> str:
+    cards: list[str] = []
+    for source, analysis in analyses:
+        character = analysis["character"]
+        symbol_config = character["symbols"]
+        symbols = dict.fromkeys(symbol_config["distribution"])
+        symbol_legend = "".join(
+            f'<span style="color:{html.escape(symbol_config[identifier]["color"], quote=True)}">'
+            f'{html.escape(identifier)}: {html.escape(symbol_config[identifier]["name"])}</span>'
+            for identifier in symbols
+        )
+        report_name = source.name.removesuffix(".analysis.json") + ".report.html"
+        ability_count = len(character["abilities"])
+        cards.append(
+            f'<a class="character" href="{html.escape(report_name, quote=True)}">'
+            f'<h2>{html.escape(character["name"])}</h2>'
+            f'<p class="symbols">{symbol_legend}</p>'
+            f'<span>{ability_count} capacités</span></a>'
+        )
+
+    return f"""<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dice Throne Helper</title>
+  <style>
+    {_embedded_font_css()}
+    :root{{--ink:#182022;--muted:#9eaaaa;--paper:#171d1e;--card:#252d2e;--line:#3b4748;--accent:#d7755f}}
+    *{{box-sizing:border-box}} body{{margin:0;background:var(--paper);color:#fff;font-family:"Roboto Condensed",sans-serif;line-height:1.45}}
+    header,main{{width:min(1100px,92vw);margin:auto}} header{{padding:4rem 0 2rem}} h1,h2{{font-family:"League Spartan",sans-serif;text-transform:uppercase}} h1{{margin:0;font-size:clamp(2.5rem,7vw,5rem);line-height:.95}} header p{{color:var(--muted);font-size:1.1rem}}
+    main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;padding-bottom:5rem}} .character{{display:block;padding:1.25rem;color:inherit;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:.75rem;transition:transform .15s,border-color .15s}} .character:hover,.character:focus-visible{{transform:translateY(-2px);border-color:var(--accent);outline:none}} h2{{margin:0 0 .5rem;font-size:1.35rem}} .character>span{{color:var(--muted)}} .symbols{{display:flex;gap:.75rem;flex-wrap:wrap;margin:.8rem 0;font-family:"League Spartan",sans-serif;font-weight:800}} .symbols span{{text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}}
+  </style>
+</head>
+<body>
+<header><h1>Dice Throne Helper</h1><p>Choisissez un personnage pour consulter son aide complète à la relance.</p></header>
+<main>{''.join(cards)}</main>
+</body>
+</html>
+"""
+
+
+def write_index(
+    analyses: list[tuple[Path, dict[str, Any]]], destination: str | Path
+) -> None:
+    output = Path(destination)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(render_index(analyses), encoding="utf-8")

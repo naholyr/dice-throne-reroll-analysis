@@ -2,6 +2,7 @@ import unittest
 
 from dicethrone_helper.character import Ability, CharacterConfig
 from dicethrone_helper.rules import is_success
+from tests.helpers import symbol_config
 
 
 class RuleTests(unittest.TestCase):
@@ -10,7 +11,7 @@ class RuleTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Test",
-                "symbols": "AABBCD",
+                "symbols": symbol_config("AABBCD"),
                 "abilities": [{"name": "Placeholder", "symbols": "A"}],
             }
         )
@@ -41,7 +42,7 @@ class RuleTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Autre distribution",
-                "symbols": "ABBCCD",
+                "symbols": symbol_config("ABBCCD"),
                 "abilities": [{"name": "Deux A", "symbols": "AA"}],
             }
         )

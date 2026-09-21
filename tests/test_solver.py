@@ -3,6 +3,7 @@ import unittest
 
 from dicethrone_helper.character import CharacterConfig
 from dicethrone_helper.solver import ExactSolver
+from tests.helpers import symbol_config
 
 
 class ExactSolverTests(unittest.TestCase):
@@ -11,7 +12,7 @@ class ExactSolverTests(unittest.TestCase):
             {
                 "schema_version": 1,
                 "name": "Probabilités contrôlées",
-                "symbols": "ABBBBB",
+                "symbols": symbol_config("ABBBBB"),
                 "abilities": [{"name": "Cinq A", "symbols": "AAAAA"}],
             }
         )

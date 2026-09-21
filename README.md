@@ -15,7 +15,7 @@ Python 3.11 ou supérieur suffit ; le projet n'a aucune dépendance d'exécution
 Pour générer puis ouvrir le rapport d'un personnage :
 
 ```bash
-./generate-report.sh chasseresse
+./generate-report.sh 12-chasseresse
 ```
 
 Sans argument, le script affiche les personnages disponibles : utilisez les
@@ -24,6 +24,14 @@ flèches ↑/↓ puis Entrée pour sélectionner celui à générer.
 ```bash
 ./generate-report.sh
 ```
+
+Pour générer tous les rapports et une page d'accueil prête à déployer :
+
+```bash
+./generate-report.sh --all
+```
+
+Le site statique est écrit dans `build/` avec sa page d'entrée `index.html`.
 
 Le fichier d'analyse n'est recalculé que s'il manque ou si le JSON du personnage
 est plus récent. Le rapport HTML est toujours régénéré puis ouvert avec `open`.
@@ -38,10 +46,10 @@ Pour installer la commande dans un environnement virtuel :
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e .
-.venv/bin/dicethrone-helper analyze characters/chasseresse.json \
-  --output build/chasseresse.analysis.json
-.venv/bin/dicethrone-helper report build/chasseresse.analysis.json \
-  --output build/chasseresse.report.html
+.venv/bin/dicethrone-helper analyze characters/12-chasseresse.json \
+  --output build/12-chasseresse.analysis.json
+.venv/bin/dicethrone-helper report build/12-chasseresse.analysis.json \
+  --output build/12-chasseresse.report.html
 ```
 
 Les deux commandes sont volontairement séparées. L'artefact d'analyse est un JSON
@@ -52,17 +60,18 @@ Sans installation, les mêmes commandes sont accessibles ainsi :
 
 ```bash
 PYTHONPATH=src python3 -m dicethrone_helper analyze \
-  characters/chasseresse.json --output build/chasseresse.analysis.json
+  characters/12-chasseresse.json --output build/12-chasseresse.analysis.json
 PYTHONPATH=src python3 -m dicethrone_helper report \
-  build/chasseresse.analysis.json --output build/chasseresse.report.html
+  build/12-chasseresse.analysis.json --output build/12-chasseresse.report.html
 ```
 
 ## Ajouter un personnage
 
-Copier `characters/chasseresse.json`, puis modifier :
+Copier `characters/12-chasseresse.json`, puis modifier :
 
 - `name` : nom affiché ;
-- `symbols` : symboles des faces 1 à 6, dans l'ordre ;
+- `symbols.distribution` : symboles des faces 1 à 6, dans l'ordre ;
+- `symbols.<lettre>` : couleur CSS et nom affiché de chaque symbole ;
 - `abilities` : chaque capacité définit exactement `symbols` ou `straight`.
 
 Une combinaison symbolique exprime des minima. `AAA` accepte donc trois, quatre ou
@@ -74,7 +83,12 @@ Exemple minimal :
 {
   "schema_version": 1,
   "name": "Exemple",
-  "symbols": "AAABBC",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": { "color": "#CDD582", "name": "Lance" },
+    "B": { "color": "#F9F6FB", "name": "Griffe" },
+    "C": { "color": "#BBBDDA", "name": "Âme liée" }
+  },
   "abilities": [
     { "name": "Attaque", "symbols": "AABBC" },
     { "name": "Petite Suite", "straight": "small" }

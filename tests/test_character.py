@@ -11,7 +11,13 @@ class CharacterConfigTests(unittest.TestCase):
         payload = {
             "schema_version": 1,
             "name": "Chasseresse",
-            "symbols": "AABBCD",
+            "symbols": {
+                "distribution": "AABBCD",
+                "A": {"color": "#CDD582", "name": "Lance"},
+                "B": {"color": "#F9F6FB", "name": "Griffe"},
+                "C": {"color": "#BBBDDA", "name": "Âme liée"},
+                "D": {"color": "#DC9335", "name": "Dents-de-sabre"},
+            },
             "abilities": [
                 {"name": "Bestiale 1", "symbols": "AAA"},
                 {"name": "Charge 1", "straight": "small"},
@@ -29,6 +35,8 @@ class CharacterConfigTests(unittest.TestCase):
         )
         self.assertEqual(character.symbol_for_face(1), "A")
         self.assertEqual(character.symbol_for_face(6), "D")
+        self.assertEqual(character.symbols["A"].name, "Lance")
+        self.assertEqual(character.symbols["A"].color, "#CDD582")
         self.assertEqual(character.abilities[0].identifier, "bestiale-1")
 
 

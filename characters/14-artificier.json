@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "name": "Artificier",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#AEC9E3",
+      "name": "Clé"
+    },
+    "B": {
+      "color": "#ED9349",
+      "name": "Écrou"
+    },
+    "C": {
+      "color": "#E8E36D",
+      "name": "Éclair"
+    }
+  },
+  "abilities": [
+    { "name": "Coup de clé 1", "symbols": "AAA" },
+    { "name": "Coup de clé 2", "symbols": "AAAA" },
+    { "name": "Coup de clé 3", "symbols": "AAAAA" },
+    { "name": "Schémas", "symbols": "BBBC" },
+    { "name": "Euréka", "symbols": "AABBB" },
+    { "name": "À partir de zéro *", "symbols": "AABB" },
+    { "name": "Décharge", "straight": "small" },
+    { "name": "Les rouages du système *", "symbols": "AAAC" },
+    { "name": "Zappp !", "straight": "large" },
+    { "name": "Essaim de robots *", "symbols": "ABBC" },
+    { "name": "Surcadençage", "symbols": "CCCC" },
+    { "name": "Mise sous tension *", "symbols": "CCC" },
+    { "name": "Puissance max ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

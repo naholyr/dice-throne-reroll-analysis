@@ -105,6 +105,18 @@ exit 2
             [str(self.project / "build" / "mage.report.html")],
         )
 
+    def test_all_generates_every_report_and_opens_the_site_index(self) -> None:
+        self.run_script("--all")
+
+        self.assertEqual(
+            self.helper_calls.read_text().splitlines(),
+            ["analyze", "report", "analyze", "report", "index"],
+        )
+        self.assertEqual(
+            self.open_calls.read_text().splitlines(),
+            [str(self.project / "build" / "index.html")],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
