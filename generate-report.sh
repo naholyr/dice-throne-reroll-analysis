@@ -196,6 +196,7 @@ TOTAL_MINUTES=1
 PROJECT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 CHARACTERS_DIR="$PROJECT_DIR/characters"
 BUILD_DIR="$PROJECT_DIR/build"
+WEBSITE_DIR="$PROJECT_DIR/generated-website"
 
 run_helper() {
   if [[ -x "$PROJECT_DIR/.venv/bin/dicethrone-helper" ]]; then
@@ -205,6 +206,12 @@ run_helper() {
   else
     PYTHONPATH="$PROJECT_DIR/src" python3 -m dicethrone_helper "$@"
   fi
+}
+
+update_website() {
+  rm -f "$WEBSITE_DIR"/*.html
+  cp "$BUILD_DIR"/*.html "$WEBSITE_DIR"/
+  echo "Site mis à jour: $WEBSITE_DIR"
 }
 
 choose_character() {
@@ -287,6 +294,7 @@ if [[ "${1:-}" == "--all" ]]; then
   open_url "$index_file"
   finish
   say "Site prêt : $index_file"
+  update_website
   exit 0
 fi
 
