@@ -1,0 +1,329 @@
+{
+  "schema_version": 1,
+  "source_file": "thor.html",
+  "hero": {
+    "name": "Thor"
+  },
+  "attributes": {
+    "offense": 7,
+    "defense": 6,
+    "agency": 8,
+    "disruption": 2,
+    "economy": 8,
+    "ease": 6
+  },
+  "overall": {
+    "matches": 5107,
+    "win_rate": 54.26
+  },
+  "matchups": [
+    {
+      "name": "Black Widow",
+      "slug": "black_widow",
+      "win_rate": 35.44,
+      "opponent_win_rate": 64.56,
+      "matches": 285
+    },
+    {
+      "name": "Alchemist",
+      "slug": "alchemist",
+      "win_rate": 39.62,
+      "opponent_win_rate": 60.38,
+      "matches": 159
+    },
+    {
+      "name": "Raveness",
+      "slug": "raveness",
+      "win_rate": 42.5,
+      "opponent_win_rate": 57.5,
+      "matches": 160
+    },
+    {
+      "name": "Duelist",
+      "slug": "duelist",
+      "win_rate": 43.75,
+      "opponent_win_rate": 56.25,
+      "matches": 16
+    },
+    {
+      "name": "Black Panther",
+      "slug": "black_panther",
+      "win_rate": 44.16,
+      "opponent_win_rate": 55.84,
+      "matches": 197
+    },
+    {
+      "name": "Krampus",
+      "slug": "krampus",
+      "win_rate": 48.24,
+      "opponent_win_rate": 51.76,
+      "matches": 85
+    },
+    {
+      "name": "Spider-Man",
+      "slug": "spider-man",
+      "win_rate": 48.88,
+      "opponent_win_rate": 51.12,
+      "matches": 223
+    },
+    {
+      "name": "Iceman",
+      "slug": "iceman",
+      "win_rate": 50.66,
+      "opponent_win_rate": 49.34,
+      "matches": 152
+    },
+    {
+      "name": "Druid",
+      "slug": "druid",
+      "win_rate": 50.72,
+      "opponent_win_rate": 49.28,
+      "matches": 69
+    },
+    {
+      "name": "Jean Grey",
+      "slug": "jean_grey",
+      "win_rate": 51.3,
+      "opponent_win_rate": 48.7,
+      "matches": 154
+    },
+    {
+      "name": "Headless Horseman",
+      "slug": "headless_horseman",
+      "win_rate": 51.5,
+      "opponent_win_rate": 48.5,
+      "matches": 167
+    },
+    {
+      "name": "Sun Elf",
+      "slug": "sun_elf",
+      "win_rate": 52.63,
+      "opponent_win_rate": 47.37,
+      "matches": 19
+    },
+    {
+      "name": "Deadpool",
+      "slug": "deadpool",
+      "win_rate": 52.94,
+      "opponent_win_rate": 47.06,
+      "matches": 51
+    },
+    {
+      "name": "Gambit",
+      "slug": "gambit",
+      "win_rate": 54.82,
+      "opponent_win_rate": 45.18,
+      "matches": 166
+    },
+    {
+      "name": "Forgemaster",
+      "slug": "forgemaster",
+      "win_rate": 55.56,
+      "opponent_win_rate": 44.44,
+      "matches": 63
+    },
+    {
+      "name": "Pyromancer",
+      "slug": "pyromancer",
+      "win_rate": 55.86,
+      "opponent_win_rate": 44.14,
+      "matches": 222
+    },
+    {
+      "name": "Santa",
+      "slug": "santa",
+      "win_rate": 56.25,
+      "opponent_win_rate": 43.75,
+      "matches": 48
+    },
+    {
+      "name": "Cursed Pirate",
+      "slug": "cursed_pirate",
+      "win_rate": 57.32,
+      "opponent_win_rate": 42.68,
+      "matches": 314
+    },
+    {
+      "name": "Rogue",
+      "slug": "rogue",
+      "win_rate": 57.46,
+      "opponent_win_rate": 42.54,
+      "matches": 134
+    },
+    {
+      "name": "Ninja",
+      "slug": "ninja",
+      "win_rate": 58.17,
+      "opponent_win_rate": 41.83,
+      "matches": 153
+    },
+    {
+      "name": "Doctor Strange",
+      "slug": "doctor_strange",
+      "win_rate": 58.39,
+      "opponent_win_rate": 41.61,
+      "matches": 137
+    },
+    {
+      "name": "Shadow Thief",
+      "slug": "shadow_thief",
+      "win_rate": 58.59,
+      "opponent_win_rate": 41.41,
+      "matches": 198
+    },
+    {
+      "name": "Necromancer",
+      "slug": "necromancer",
+      "win_rate": 60.61,
+      "opponent_win_rate": 39.39,
+      "matches": 66
+    },
+    {
+      "name": "Moon Elf",
+      "slug": "moon_elf",
+      "win_rate": 60.66,
+      "opponent_win_rate": 39.34,
+      "matches": 61
+    },
+    {
+      "name": "Wolverine",
+      "slug": "wolverine",
+      "win_rate": 60.87,
+      "opponent_win_rate": 39.13,
+      "matches": 92
+    },
+    {
+      "name": "Pale Lady",
+      "slug": "pale_lady",
+      "win_rate": 61.18,
+      "opponent_win_rate": 38.82,
+      "matches": 85
+    },
+    {
+      "name": "Vampire Lord",
+      "slug": "vampire_lord",
+      "win_rate": 61.26,
+      "opponent_win_rate": 38.74,
+      "matches": 111
+    },
+    {
+      "name": "Captain Marvel",
+      "slug": "captain_marvel",
+      "win_rate": 61.63,
+      "opponent_win_rate": 38.37,
+      "matches": 86
+    },
+    {
+      "name": "Artificer",
+      "slug": "artificer",
+      "win_rate": 61.72,
+      "opponent_win_rate": 38.28,
+      "matches": 128
+    },
+    {
+      "name": "Loki",
+      "slug": "loki",
+      "win_rate": 61.82,
+      "opponent_win_rate": 38.18,
+      "matches": 165
+    },
+    {
+      "name": "Monk",
+      "slug": "monk",
+      "win_rate": 63.08,
+      "opponent_win_rate": 36.92,
+      "matches": 130
+    },
+    {
+      "name": "Samurai",
+      "slug": "samurai",
+      "win_rate": 63.64,
+      "opponent_win_rate": 36.36,
+      "matches": 44
+    },
+    {
+      "name": "Cyclops",
+      "slug": "cyclops",
+      "win_rate": 64.18,
+      "opponent_win_rate": 35.82,
+      "matches": 67
+    },
+    {
+      "name": "Scarlet Witch",
+      "slug": "scarlet_witch",
+      "win_rate": 65.09,
+      "opponent_win_rate": 34.91,
+      "matches": 106
+    },
+    {
+      "name": "Paladin",
+      "slug": "paladin",
+      "win_rate": 66.85,
+      "opponent_win_rate": 33.15,
+      "matches": 178
+    },
+    {
+      "name": "Storm",
+      "slug": "storm",
+      "win_rate": 67.39,
+      "opponent_win_rate": 32.61,
+      "matches": 46
+    },
+    {
+      "name": "Tactician",
+      "slug": "tactician",
+      "win_rate": 67.47,
+      "opponent_win_rate": 32.53,
+      "matches": 83
+    },
+    {
+      "name": "Gunslinger",
+      "slug": "gunslinger",
+      "win_rate": 67.74000000000001,
+      "opponent_win_rate": 32.26,
+      "matches": 31
+    },
+    {
+      "name": "Barbarian",
+      "slug": "barbarian",
+      "win_rate": 69.33,
+      "opponent_win_rate": 30.67,
+      "matches": 75
+    },
+    {
+      "name": "Psylocke",
+      "slug": "psylocke",
+      "win_rate": 71.78999999999999,
+      "opponent_win_rate": 28.21,
+      "matches": 78
+    },
+    {
+      "name": "Huntress",
+      "slug": "huntress",
+      "win_rate": 72.73,
+      "opponent_win_rate": 27.27,
+      "matches": 44
+    },
+    {
+      "name": "Seraph",
+      "slug": "seraph",
+      "win_rate": 74.0,
+      "opponent_win_rate": 26.0,
+      "matches": 50
+    },
+    {
+      "name": "Treant",
+      "slug": "treant",
+      "win_rate": 75.34,
+      "opponent_win_rate": 24.66,
+      "matches": 73
+    },
+    {
+      "name": "Mystic Brawler",
+      "slug": "mystic_brawler",
+      "win_rate": 78.57,
+      "opponent_win_rate": 21.43,
+      "matches": 28
+    }
+  ]
+}

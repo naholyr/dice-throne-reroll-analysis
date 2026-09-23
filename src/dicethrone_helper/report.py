@@ -453,7 +453,22 @@ def write_report(analysis: dict[str, Any], destination: str | Path) -> None:
     output.write_text(render_report(analysis), encoding="utf-8")
 
 
-def render_index(analyses: list[tuple[Path, dict[str, Any]]]) -> str:
+def load_matchup_heroes(directory: str | Path) -> list[tuple[str, str]]:
+    heroes_dir = Path(directory)
+    heroes: list[tuple[str, str]] = []
+    for path in sorted(heroes_dir.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            heroes.append((path.stem, payload["hero"]["name"]))
+        except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
+            raise ValueError(f"JSON de héros Karnyx invalide: {path}") from error
+    return heroes
+
+
+def render_index(
+    analyses: list[tuple[Path, dict[str, Any]]],
+    matchup_heroes: list[tuple[str, str]] | None = None,
+) -> str:
     cards: list[str] = []
     for source, analysis in analyses:
         character = analysis["character"]
@@ -473,6 +488,11 @@ def render_index(analyses: list[tuple[Path, dict[str, Any]]]) -> str:
             f'<span>{ability_count} capacités</span></a>'
         )
 
+    matchup_options = "".join(
+        f'<option value="{html.escape(slug, quote=True)}">{html.escape(name)}</option>'
+        for slug, name in matchup_heroes or []
+    )
+
     return f"""<!doctype html>
 <html lang="fr">
 <head>
@@ -484,20 +504,39 @@ def render_index(analyses: list[tuple[Path, dict[str, Any]]]) -> str:
     :root{{--ink:#182022;--muted:#9eaaaa;--paper:#171d1e;--card:#252d2e;--line:#3b4748;--accent:#d7755f}}
     *{{box-sizing:border-box}} body{{margin:0;background:var(--paper);color:#fff;font-family:"Roboto Condensed",sans-serif;line-height:1.45}}
     header,main{{width:min(1100px,92vw);margin:auto}} header{{padding:4rem 0 2rem}} h1,h2{{font-family:"League Spartan",sans-serif;text-transform:uppercase}} h1{{margin:0;font-size:clamp(2.5rem,7vw,5rem);line-height:.95}} header p{{color:var(--muted);font-size:1.1rem}}
-    main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;padding-bottom:5rem}} .character{{display:block;padding:1.25rem;color:inherit;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:.75rem;transition:transform .15s,border-color .15s}} .character:hover,.character:focus-visible{{transform:translateY(-2px);border-color:var(--accent);outline:none}} h2{{margin:0 0 .5rem;font-size:1.35rem}} .character>span{{color:var(--muted)}} .symbols{{display:flex;gap:.75rem;flex-wrap:wrap;margin:.8rem 0;font-family:"League Spartan",sans-serif;font-weight:800}} .symbols span{{text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}}
+    main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;padding-bottom:3rem}} .character{{display:block;padding:1.25rem;color:inherit;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:.75rem;transition:transform .15s,border-color .15s}} .character:hover,.character:focus-visible{{transform:translateY(-2px);border-color:var(--accent);outline:none}} h2{{margin:0 0 .5rem;font-size:1.35rem}} .character>span{{color:var(--muted)}} .symbols{{display:flex;gap:.75rem;flex-wrap:wrap;margin:.8rem 0;font-family:"League Spartan",sans-serif;font-weight:800}} .symbols span{{text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}}
+    .matchup-picker{{width:min(1100px,92vw);margin:0 auto 5rem;padding:1.5rem;background:var(--card);border:1px solid var(--line);border-radius:.75rem}} .matchup-picker h2{{margin:0 0 .35rem}} .matchup-picker p{{color:var(--muted)}} .matchup-controls{{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:.75rem;align-items:end;margin-top:1rem}} .matchup-controls label{{display:grid;gap:.3rem;color:var(--muted);font-size:.85rem;font-weight:700;text-transform:uppercase}} .matchup-controls select,.matchup-controls button{{font:inherit;padding:.65rem .75rem;border:1px solid var(--line);border-radius:.4rem;background:#182022;color:#fff}} .matchup-controls button{{cursor:pointer;background:var(--accent);border-color:var(--accent);font-weight:700}} .matchup-controls button:disabled{{cursor:not-allowed;opacity:.45}} @media(max-width:700px){{.matchup-controls{{grid-template-columns:1fr}}}}
   </style>
 </head>
 <body>
 <header><h1>Dice Throne Helper</h1><p>Choisissez un personnage pour consulter son aide complète à la relance.</p></header>
 <main>{''.join(cards)}</main>
+<section class="matchup-picker"><h2>Préparer un matchup</h2><p>Choisissez trois héros pour ouvrir le rapport de préparation de cette équipe.</p><div class="matchup-controls"><label>Héros 1<select class="matchup-hero"><option value="">Choisir...</option>{matchup_options}</select></label><label>Héros 2<select class="matchup-hero"><option value="">Choisir...</option>{matchup_options}</select></label><label>Héros 3<select class="matchup-hero"><option value="">Choisir...</option>{matchup_options}</select></label><button id="open-matchup" type="button" disabled>Ouvrir le rapport</button></div></section>
+<script>
+(() => {{
+    const selects = [...document.querySelectorAll('.matchup-hero')];
+    const button = document.querySelector('#open-matchup');
+    const update = () => {{
+        const values = selects.map(select => select.value);
+        button.disabled = values.some(value => !value) || new Set(values).size !== 3;
+    }};
+    selects.forEach(select => select.addEventListener('change', update));
+    button.addEventListener('click', () => {{
+        const values = selects.map(select => select.value).sort();
+        window.location.href = `matchups/${{values.join('-')}}.html`;
+    }});
+}})();
+</script>
 </body>
 </html>
 """
 
 
 def write_index(
-    analyses: list[tuple[Path, dict[str, Any]]], destination: str | Path
+    analyses: list[tuple[Path, dict[str, Any]]],
+    destination: str | Path,
+    matchup_heroes: list[tuple[str, str]] | None = None,
 ) -> None:
     output = Path(destination)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(render_index(analyses), encoding="utf-8")
+    output.write_text(render_index(analyses, matchup_heroes), encoding="utf-8")

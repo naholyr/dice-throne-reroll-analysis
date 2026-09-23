@@ -69,6 +69,39 @@ PYTHONPATH=src python3 -m dicethrone_helper report \
   build/12-chasseresse.analysis.json --output build/12-chasseresse.report.html
 ```
 
+Pour extraire les attributs et les statistiques d'une ou plusieurs pages HTML
+téléchargées depuis Karnyx :
+
+```bash
+PYTHONPATH=src python3 -m dicethrone_helper extract-karnyx \
+  karnyx/heroes/alchemist.html --output characters/karnyx
+```
+
+La commande écrit un fichier JSON par page. Chaque matchup contient le taux de
+victoire du héros, celui affiché pour l'adversaire dans `Best Picks`, ainsi que
+le nombre de parties.
+
+Pour traiter toutes les pages présentes dans `karnyx/heroes/` :
+
+```bash
+./generate-heroes-stats.sh
+```
+
+Pour préparer une équipe de trois héros :
+
+```bash
+./generate-matchup-report.sh alchemist artificer gambit
+```
+
+Le rapport est écrit dans `generated-website/matchups/`, avec les slugs triés
+alphabétiquement dans le nom du fichier.
+
+Pour générer tous les rapports possibles à partir des héros JSON disponibles :
+
+```bash
+./generate-matchup-report.sh --all
+```
+
 ## Ajouter un personnage
 
 Copier `characters/12-chasseresse.json`, puis modifier :

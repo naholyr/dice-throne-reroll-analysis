@@ -300,10 +300,11 @@ if [[ "${1:-}" == "--all" ]]; then
 
   index_file="$BUILD_DIR/index.html"
   run_helper index "${analysis_files[@]}" --output "$index_file"
-  open_url "$index_file"
   finish
-  say "Site prêt : $index_file"
   update_website
+  website_index="$WEBSITE_DIR/index.html"
+  say "Site prêt : $website_index"
+  open_url "$website_index"
   exit 0
 fi
 

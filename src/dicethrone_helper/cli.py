@@ -7,7 +7,13 @@ from typing import Sequence
 
 from .analysis import analyze_character, write_analysis
 from .character import ConfigError, load_character
-from .report import load_analysis, write_index, write_report
+from .karnyx import KarnyxExtractionError, write_extractions
+from .matchup_report import (
+    MatchupReportError,
+    write_all_matchup_reports,
+    write_matchup_report,
+)
+from .report import load_analysis, load_matchup_heroes, write_index, write_report
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -34,6 +40,35 @@ def _parser() -> argparse.ArgumentParser:
     )
     index.add_argument("analyses", nargs="+", type=Path)
     index.add_argument("--output", "-o", type=Path, required=True)
+    index.add_argument("--matchup-heroes-dir", type=Path, default=Path("characters/karnyx"))
+
+    extract = subparsers.add_parser(
+        "extract-karnyx", help="Extraire les statistiques des pages HTML Karnyx."
+    )
+    extract.add_argument("html", nargs="+", type=Path)
+    extract.add_argument("--output", "-o", type=Path, required=True)
+    extract.add_argument(
+        "--skip-up-to-date",
+        action="store_true",
+        help="Ne pas régénérer les JSON plus récents que leur HTML.",
+    )
+
+    matchups = subparsers.add_parser(
+        "matchups", help="Générer un rapport de matchups pour une équipe de trois héros."
+    )
+    matchups.add_argument("team", nargs="*", metavar="HERO_SLUG")
+    matchups.add_argument(
+        "--all", action="store_true", help="Générer toutes les équipes de trois possibles."
+    )
+    matchups.add_argument(
+        "--skip-up-to-date",
+        action="store_true",
+        help="Ne pas régénérer les rapports plus récents que leurs trois JSON.",
+    )
+    matchups.add_argument("--heroes-dir", type=Path, default=Path("characters/karnyx"))
+    matchups.add_argument(
+        "--output-dir", type=Path, default=Path("generated-website/matchups")
+    )
     return parser
 
 
@@ -49,11 +84,45 @@ def main(argv: Sequence[str] | None = None) -> int:
             analysis = load_analysis(args.analysis)
             write_report(analysis, args.output)
             print(f"Rapport écrit dans {args.output}")
+        elif args.command == "extract-karnyx":
+            outputs = write_extractions(
+                args.html,
+                args.output,
+                skip_if_up_to_date=args.skip_up_to_date,
+            )
+            for output in outputs:
+                print(f"Données Karnyx écrites dans {output}")
+        elif args.command == "matchups":
+            if args.all:
+                outputs = write_all_matchup_reports(
+                    args.heroes_dir,
+                    args.output_dir,
+                    skip_if_up_to_date=args.skip_up_to_date,
+                )
+                print(f"{len(outputs)} rapports de matchups écrits dans {args.output_dir}")
+            else:
+                output = write_matchup_report(
+                    args.team,
+                    args.heroes_dir,
+                    args.output_dir,
+                    skip_if_up_to_date=args.skip_up_to_date,
+                )
+                print(f"Rapport de matchups écrit dans {output}")
         else:
             analyses = [(path, load_analysis(path)) for path in args.analyses]
-            write_index(analyses, args.output)
+            write_index(
+                analyses,
+                args.output,
+                matchup_heroes=load_matchup_heroes(args.matchup_heroes_dir),
+            )
             print(f"Index écrit dans {args.output}")
-    except (ConfigError, ValueError, OSError) as error:
+    except (
+        ConfigError,
+        KarnyxExtractionError,
+        MatchupReportError,
+        ValueError,
+        OSError,
+    ) as error:
         print(f"Erreur: {error}", file=sys.stderr)
         return 2
     return 0
