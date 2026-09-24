@@ -2,7 +2,7 @@
   "schema_version": 1,
   "source_file": "cursed_pirate.html",
   "hero": {
-    "name": "Cursed Pirate"
+    "name": "Pirate Maudite"
   },
   "attributes": {
     "offense": 8,

@@ -6,6 +6,7 @@ from itertools import combinations
 from pathlib import Path
 from typing import Any
 
+from . import report as report_module
 from .report import _embedded_font_css, _embedded_font_license
 
 
@@ -28,10 +29,9 @@ def _is_up_to_date(team: list[str], heroes_dir: Path, output_dir: Path) -> bool:
     if not output.is_file():
         return False
     output_mtime = output.stat().st_mtime
-    return all(
-        (heroes_dir / f"{slug}.json").stat().st_mtime < output_mtime
-        for slug in team
-    )
+    input_paths = [heroes_dir / f"{slug}.json" for slug in team]
+    source_paths = [Path(__file__), Path(report_module.__file__)]
+    return all(path.stat().st_mtime < output_mtime for path in input_paths + source_paths)
 
 
 def _load_hero(heroes_dir: Path, slug: str) -> dict[str, Any]:
@@ -44,13 +44,11 @@ def _load_hero(heroes_dir: Path, slug: str) -> dict[str, Any]:
         raise MatchupReportError(f"JSON invalide pour {slug}") from error
 
 
-def _team_matchups(heroes: list[dict[str, Any]], team_slugs: set[str]) -> list[dict[str, Any]]:
+def _team_matchups(heroes: list[dict[str, Any]]) -> list[dict[str, Any]]:
     by_opponent: dict[str, dict[str, Any]] = {}
     for hero in heroes:
         for matchup in hero["matchups"]:
             opponent = matchup["slug"]
-            if opponent in team_slugs:
-                continue
             entry = by_opponent.setdefault(
                 opponent,
                 {"slug": opponent, "name": matchup["name"], "members": []},
@@ -79,7 +77,7 @@ def calculate_matchup_report(team: list[str], heroes_dir: Path) -> dict[str, Any
     if len(team) != 3 or len(set(team)) != 3:
         raise MatchupReportError("Une équipe doit contenir exactement 3 héros différents")
     heroes = [_load_hero(heroes_dir, slug) for slug in team]
-    matchups = _team_matchups(heroes, set(team))
+    matchups = _team_matchups(heroes)
 
     for opponent in matchups:
         members = opponent["members"]
@@ -147,15 +145,27 @@ def render_matchup_report(report: dict[str, Any]) -> str:
     def opponent_list(items: list[dict[str, Any]], count_key: str) -> str:
         if not items:
             return '<p class="empty">Aucun adversaire dans cette categorie.</p>'
+
+        def member_class(member: dict[str, Any]) -> str:
+            if member["win_rate"] <= NOTABLE_LOW_THRESHOLD:
+                return "bad"
+            if member["win_rate"] >= NOTABLE_HIGH_THRESHOLD:
+                return "good"
+            if count_key == "sweet_count" and member["win_rate"] >= SWEET_THRESHOLD:
+                return "good"
+            if count_key == "nemesis_count" and member["win_rate"] <= NEMESIS_THRESHOLD:
+                return "bad"
+            return "muted"
+
         rows = []
         for item in sorted(items, key=lambda value: (-value[count_key], value["name"])):
             details = "".join(
-                f'<span>{html.escape(member["hero"])} {_percent(member["win_rate"])}</span>'
+                f'<span class="rate {member_class(member)}">{html.escape(member["hero"])} {_percent(member["win_rate"])}</span>'
                 for member in sorted(item["members"], key=lambda value: value["win_rate"])
             )
             rows.append(
                 f'<li><div><strong>{html.escape(item["name"])}</strong>'
-                f'<small>{item[count_key]} membres concernes</small></div>'
+                f'<small>{item[count_key]} membres concernés</small></div>'
                 f'<div class="member-rates">{details}</div></li>'
             )
         return f'<ul class="compact-list">{"".join(rows)}</ul>'
@@ -187,7 +197,7 @@ main{{max-width:1280px;margin:0 auto;padding:3rem 1.25rem 5rem}} h1,h2,h3{{font-
 .intro{{display:flex;justify-content:space-between;gap:2rem;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:2rem}} .intro p{{max-width:620px;font-size:1.15rem}} .team{{font-family:"League Spartan";font-size:1.15rem;text-align:right;max-width:300px}}
 .summary{{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.5rem 0 3rem}} .summary-card{{background:var(--panel);border:1px solid var(--line);padding:1.25rem;border-top:5px solid var(--teal)}} .summary-card.danger{{border-top-color:var(--red)}} .summary-card.gold{{border-top-color:var(--gold)}} .summary-card strong{{display:block;font:700 2.7rem/1 "League Spartan"}} .summary-card p{{font-size:.95rem}}
 .grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1rem 0 3rem}} .panel{{background:var(--panel);border:1px solid var(--line);padding:1.25rem}} .panel>p{{margin-bottom:1rem}} .compact-list{{list-style:none;padding:0;margin:0}} .compact-list li{{display:flex;justify-content:space-between;gap:1rem;border-top:1px solid var(--line);padding:.75rem 0}} .compact-list li>div:first-child{{display:flex;flex-direction:column}} .compact-list small,td small{{display:block;color:var(--muted);font-size:.82rem}} .member-rates{{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:end;color:var(--muted)}}
-.table-wrap{{overflow:auto;background:var(--panel);border:1px solid var(--line)}} table{{width:100%;border-collapse:collapse;min-width:760px}} th,td{{padding:.7rem .8rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}} thead th{{background:#e8dfd1;font-family:"League Spartan";font-size:.9rem}} tbody th{{font-family:"League Spartan";white-space:nowrap}} tbody tr.nemesis{{background:#f9e9e7}} tbody tr.sweet{{background:#e7f2ee}} .rate{{font:700 1.1rem "League Spartan"}} .rate.good{{color:var(--teal)}} .rate.bad{{color:var(--red)}} .rate.even{{color:var(--ink)}} td .rate+small{{margin-top:.15rem}} .best-choice b{{color:var(--teal)}}
+.table-wrap{{overflow:auto;background:var(--panel);border:1px solid var(--line)}} table{{width:100%;border-collapse:collapse;min-width:760px}} th,td{{padding:.7rem .8rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}} thead th{{background:#e8dfd1;font-family:"League Spartan";font-size:.9rem}} tbody th{{font-family:"League Spartan";white-space:nowrap}} tbody tr.nemesis{{background:#f9e9e7}} tbody tr.sweet{{background:#e7f2ee}} .rate{{font:700 1.1rem "League Spartan"}} .rate.good{{color:var(--teal);font-weight:700}} .rate.bad{{color:var(--red);font-weight:700}} .rate.even{{color:var(--ink);font-weight:700}} .rate.muted{{color:var(--muted);font-weight:400;opacity:.75}} td .rate+small{{margin-top:.15rem}} .best-choice b{{color:var(--teal)}}
 .legend{{display:flex;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin:1rem 0}} .legend span::before{{content:"";display:inline-block;width:.7rem;height:.7rem;margin-right:.35rem;background:currentColor}} .legend .good{{color:var(--teal)}} .legend .bad{{color:var(--red)}} .legend .even{{color:var(--gold)}} .empty{{padding:1rem;text-align:center;font-style:italic}}
 footer{{margin-top:3rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.8rem}} @media(max-width:800px){{main{{padding-top:2rem}} .intro{{display:block}} .team{{text-align:left;margin-top:1rem}} .summary{{grid-template-columns:repeat(2,1fr)}} .grid{{grid-template-columns:1fr}}}}
 @media(max-width:480px){{.summary{{grid-template-columns:1fr 1fr;gap:.5rem}} .summary-card{{padding:.8rem}} .summary-card strong{{font-size:2rem}}}}
@@ -196,7 +206,7 @@ footer{{margin-top:3rem;border-top:1px solid var(--line);padding-top:1rem;color:
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Matchups - {html.escape(team_names)}</title><style>{css}</style></head><body><main>
 <header class="intro"><div><div class="eyebrow">Dice Throne · préparation de draft</div><h1>{html.escape(team_names)}</h1><p>Une vue de préparation pour repérer les menaces communes, les cibles favorables et les duels qui méritent d'être mémorisés avant les bans.</p></div><div class="team">Équipe analysée<br><span>{html.escape(team_names)}</span></div></header>
-<section class="summary">{_summary_card("Némésis", str(len(nemeses)), "adversaires dangereux contre au moins 2 héros", "danger")}{_summary_card("Sweets", str(len(sweets)), "adversaires favorables contre au moins 2 héros", "gold")}{_summary_card("Matchups notables", str(len(notable)), "duels à 40% ou moins, ou 60% ou plus")}{_summary_card("Adversaires comparés", str(len(matchups)), "héros disponibles hors de votre équipe")}</section>
+<section class="summary">{_summary_card("Némésis", str(len(nemeses)), "adversaires dangereux contre au moins 2 héros", "danger")}{_summary_card("Sweets", str(len(sweets)), "adversaires favorables contre au moins 2 héros", "gold")}{_summary_card("Matchups notables", str(len(notable)), "duels à 40% ou moins, ou 60% ou plus")}{_summary_card("Adversaires comparés", str(len(matchups)), "tous les héros du pool, y compris les mirror matches")}</section>
 <section class="grid"><article class="panel"><h2>Némésis</h2><p>Priorité de ban ou de préparation : ces héros peuvent mettre en difficulté plusieurs membres de l'équipe.</p>{opponent_list(nemeses, "nemesis_count")}</article><article class="panel"><h2>Sweets</h2><p>Cibles à privilégier : plusieurs membres de l'équipe ont un avantage statistique clair.</p>{opponent_list(sweets, "sweet_count")}</article></section>
 <section><h2>Matrice de préparation</h2><p>Chaque pourcentage est la chance de victoire du héros de votre équipe. La colonne “meilleur choix” indique le héros à privilégier si cet adversaire arrive dans le trio.</p><div class="legend"><span class="good">60%+ très favorable</span><span class="even">entre les deux seuils</span><span class="bad">40%- très défavorable</span></div><div class="table-wrap"><table><thead><tr><th>Adversaire</th>{matrix_header}<th>Meilleur choix</th><th>Écart équipe</th></tr></thead><tbody>{''.join(matrix_rows)}</tbody></table></div></section>
 <section class="panel" style="margin-top:3rem"><h2>Matchups à retenir</h2><p>Les extrêmes sont les plus utiles à mémoriser. Les échantillons sont affichés pour garder le contexte statistique.</p><div class="table-wrap"><table><thead><tr><th>Votre héros</th><th>Adversaire</th><th>Votre winrate</th><th>Parties</th></tr></thead><tbody>{notable_rows}</tbody></table></div></section>

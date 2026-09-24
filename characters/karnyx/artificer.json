@@ -2,7 +2,7 @@
   "schema_version": 1,
   "source_file": "artificer.html",
   "hero": {
-    "name": "Artificer"
+    "name": "Artificier"
   },
   "attributes": {
     "offense": 8,

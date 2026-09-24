@@ -2,7 +2,7 @@
   "schema_version": 1,
   "source_file": "moon_elf.html",
   "hero": {
-    "name": "Moon Elf"
+    "name": "Elfe lunaire"
   },
   "attributes": {
     "offense": 7,

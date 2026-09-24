@@ -2,7 +2,7 @@
   "schema_version": 1,
   "source_file": "huntress.html",
   "hero": {
-    "name": "Huntress"
+    "name": "Chasseresse"
   },
   "attributes": {
     "offense": 1,
