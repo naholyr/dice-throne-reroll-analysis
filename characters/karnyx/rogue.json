@@ -4,6 +4,7 @@
   "hero": {
     "name": "Rogue"
   },
+  "vf": true,
   "attributes": {
     "offense": 7,
     "defense": 6,

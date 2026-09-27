@@ -4,6 +4,7 @@
   "hero": {
     "name": "Reine Vampire"
   },
+  "vf": true,
   "attributes": {
     "offense": 7,
     "defense": 4,

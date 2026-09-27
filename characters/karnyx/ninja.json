@@ -4,6 +4,7 @@
   "hero": {
     "name": "Ninja"
   },
+  "vf": true,
   "attributes": {
     "offense": 6,
     "defense": 6,

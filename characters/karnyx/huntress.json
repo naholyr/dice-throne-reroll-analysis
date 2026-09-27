@@ -4,6 +4,7 @@
   "hero": {
     "name": "Chasseresse"
   },
+  "vf": true,
   "attributes": {
     "offense": 1,
     "defense": 10,

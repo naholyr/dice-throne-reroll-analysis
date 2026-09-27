@@ -4,6 +4,7 @@
   "hero": {
     "name": "As de la gâchette"
   },
+  "vf": true,
   "attributes": {
     "offense": 6,
     "defense": 7,

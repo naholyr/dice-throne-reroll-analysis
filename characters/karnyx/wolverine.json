@@ -4,6 +4,7 @@
   "hero": {
     "name": "Wolverine"
   },
+  "vf": true,
   "attributes": {
     "offense": 8,
     "defense": 6,

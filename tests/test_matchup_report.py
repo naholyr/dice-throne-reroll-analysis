@@ -13,11 +13,14 @@ from dicethrone_helper.matchup_report import (
 )
 
 
-def hero_payload(slug: str, name: str, rates: dict[str, float]) -> dict[str, object]:
+def hero_payload(
+    slug: str, name: str, rates: dict[str, float], *, vf: bool = False
+) -> dict[str, object]:
     return {
         "schema_version": 1,
         "source_file": f"{slug}.html",
         "hero": {"name": name},
+        "vf": vf,
         "attributes": {},
         "overall": {"matches": 100, "win_rate": 50},
         "matchups": [
@@ -91,6 +94,33 @@ class MatchupReportTests(unittest.TestCase):
             self.assertIn('<span class="rate good">Gamma 60.00%</span>', html)
             self.assertIn('membres concernés', html)
 
+    def test_renders_default_vf_only_filter_and_marks_opponents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            heroes_dir = Path(directory)
+            team_slugs = ("alpha", "beta", "gamma")
+            for slug in team_slugs:
+                payload = hero_payload(
+                    slug,
+                    slug.title(),
+                    {"vfhero": 35, "nonvf": 65},
+                )
+                (heroes_dir / f"{slug}.json").write_text(json.dumps(payload), encoding="utf-8")
+            for slug, vf in (("vfhero", True), ("nonvf", False)):
+                payload = hero_payload(slug, slug.title(), {}, vf=vf)
+                (heroes_dir / f"{slug}.json").write_text(json.dumps(payload), encoding="utf-8")
+
+            report = calculate_matchup_report(list(team_slugs), heroes_dir)
+            html = render_matchup_report(report)
+            matchups = {item["slug"]: item for item in report["matchups"]}
+
+            self.assertTrue(matchups["vfhero"]["vf"])
+            self.assertFalse(matchups["nonvf"]["vf"])
+            self.assertIn('<input type="checkbox" id="vf-filter" checked>', html)
+            self.assertIn('<tr class="opponent-row', html)
+            self.assertIn('data-vf="true"', html)
+            self.assertIn('data-vf="false"', html)
+            self.assertIn("#notable-count", html)
+
     def test_writes_alphabetically_sorted_self_contained_report(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -154,6 +184,11 @@ class MatchupReportTests(unittest.TestCase):
                     {other: 50 for other in ("alpha", "beta", "gamma", "opponent") if other != slug},
                 )
                 (heroes_dir / f"{slug}.json").write_text(json.dumps(payload), encoding="utf-8")
+            opponent_path = heroes_dir / "opponent.json"
+            opponent_path.write_text(
+                json.dumps(hero_payload("opponent", "Opponent", {}, vf=True)),
+                encoding="utf-8",
+            )
 
             output = write_matchup_report(["alpha", "beta", "gamma"], heroes_dir, output_dir)
             fresh_timestamp = 4_102_444_800
@@ -168,6 +203,21 @@ class MatchupReportTests(unittest.TestCase):
 
             changed_timestamp = fresh_timestamp + 1
             os.utime(heroes_dir / "beta.json", (changed_timestamp, changed_timestamp))
+            write_matchup_report(
+                ["alpha", "beta", "gamma"],
+                heroes_dir,
+                output_dir,
+                skip_if_up_to_date=True,
+            )
+            self.assertNotEqual(output.stat().st_mtime, fresh_timestamp)
+
+            os.utime(output, (fresh_timestamp, fresh_timestamp))
+            changed_timestamp = fresh_timestamp + 2
+            opponent_path.write_text(
+                json.dumps(hero_payload("opponent", "Opponent", {}, vf=False)),
+                encoding="utf-8",
+            )
+            os.utime(opponent_path, (changed_timestamp, changed_timestamp))
             write_matchup_report(
                 ["alpha", "beta", "gamma"],
                 heroes_dir,

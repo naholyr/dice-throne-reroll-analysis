@@ -4,6 +4,7 @@
   "hero": {
     "name": "Samurai"
   },
+  "vf": true,
   "attributes": {
     "offense": 5,
     "defense": 6,

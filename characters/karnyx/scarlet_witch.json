@@ -4,6 +4,7 @@
   "hero": {
     "name": "Scarlet Witch"
   },
+  "vf": true,
   "attributes": {
     "offense": 8,
     "defense": 2,

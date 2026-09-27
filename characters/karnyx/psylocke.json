@@ -4,6 +4,7 @@
   "hero": {
     "name": "Psylocke"
   },
+  "vf": true,
   "attributes": {
     "offense": 5,
     "defense": 5,

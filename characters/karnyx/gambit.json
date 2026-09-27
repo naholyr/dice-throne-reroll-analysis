@@ -4,6 +4,7 @@
   "hero": {
     "name": "Gambit"
   },
+  "vf": true,
   "attributes": {
     "offense": 9,
     "defense": 4,

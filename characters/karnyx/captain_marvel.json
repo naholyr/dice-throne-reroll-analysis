@@ -4,6 +4,7 @@
   "hero": {
     "name": "Captain Marvel"
   },
+  "vf": true,
   "attributes": {
     "offense": 8,
     "defense": 3,

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "name": "Thor",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#73CAD9E84C8E",
+      "name": "Marteau"
+    },
+    "B": {
+      "color": "#EA474A",
+      "name": "Grandeur"
+    },
+    "C": {
+      "color": "#E7D584",
+      "name": "Foudre"
+    }
+  },
+  "abilities": [
+    { "name": "Martèlement 1", "symbols": "AAA" },
+    { "name": "Martèlement 2", "symbols": "AAAA" },
+    { "name": "Martèlement 3", "symbols": "AAAAA" },
+    { "name": "Odinforce", "symbols": "AABBB" },
+    { "name": "Puissante invocation", "symbols": "ABBC" },
+    { "name": "Boum boum ! *", "symbols": "AACC" },
+    { "name": "Chaîne d'éclairs", "symbols": "AAACC" },
+    { "name": "Paratonnerre", "straight": "small" },
+    { "name": "Éclair", "straight": "large" },
+    { "name": "Muscles Asgardiens *", "symbols": "BBB" },
+    { "name": "Foudre en bouteille", "symbols": "CCCC" },
+    { "name": "Ricochet ! *", "symbols": "CCC" },
+    { "name": "Pour Asgard ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

@@ -4,6 +4,7 @@
   "hero": {
     "name": "Séraphine"
   },
+  "vf": true,
   "attributes": {
     "offense": 2,
     "defense": 7,

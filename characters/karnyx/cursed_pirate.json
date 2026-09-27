@@ -4,6 +4,7 @@
   "hero": {
     "name": "Pirate Maudite"
   },
+  "vf": true,
   "attributes": {
     "offense": 8,
     "defense": 5,

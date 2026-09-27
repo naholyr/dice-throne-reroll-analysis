@@ -4,6 +4,7 @@
   "hero": {
     "name": "Paladin"
   },
+  "vf": true,
   "attributes": {
     "offense": 4,
     "defense": 10,

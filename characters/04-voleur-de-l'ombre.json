@@ -34,6 +34,6 @@
     { "name": "Frappe sournoise", "straight": "large" },
     { "name": "Coup de surin *", "symbols": "ABCD" },
     { "name": "Danse de l'ombre", "symbols": "DDD" },
-    { "name": " ! (ultime)", "symbols": "DDDDD" }
+    { "name": "Surin des ténèbres ! (ultime)", "symbols": "DDDDD" }
   ]
 }

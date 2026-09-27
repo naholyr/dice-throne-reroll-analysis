@@ -4,6 +4,7 @@
   "hero": {
     "name": "Deadpool"
   },
+  "vf": true,
   "attributes": {
     "offense": 7,
     "defense": 5,

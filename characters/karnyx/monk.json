@@ -4,6 +4,7 @@
   "hero": {
     "name": "Moine"
   },
+  "vf": true,
   "attributes": {
     "offense": 5,
     "defense": 10,

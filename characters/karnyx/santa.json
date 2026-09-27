@@ -4,6 +4,7 @@
   "hero": {
     "name": "Père Noêl"
   },
+  "vf": true,
   "attributes": {
     "offense": 7,
     "defense": 4,

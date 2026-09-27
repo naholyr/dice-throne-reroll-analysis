@@ -4,6 +4,7 @@
   "hero": {
     "name": "Doctor Strange"
   },
+  "vf": true,
   "attributes": {
     "offense": 6,
     "defense": 3,

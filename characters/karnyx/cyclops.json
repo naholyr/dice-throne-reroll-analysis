@@ -4,6 +4,7 @@
   "hero": {
     "name": "Cyclops"
   },
+  "vf": true,
   "attributes": {
     "offense": 6,
     "defense": 5,

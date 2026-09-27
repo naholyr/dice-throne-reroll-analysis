@@ -30,6 +30,19 @@ def _is_up_to_date(team: list[str], heroes_dir: Path, output_dir: Path) -> bool:
         return False
     output_mtime = output.stat().st_mtime
     input_paths = [heroes_dir / f"{slug}.json" for slug in team]
+    try:
+        opponent_slugs = {
+            matchup["slug"]
+            for path in input_paths
+            for matchup in json.loads(path.read_text(encoding="utf-8"))["matchups"]
+        }
+    except (OSError, json.JSONDecodeError, KeyError, TypeError):
+        return False
+    input_paths.extend(
+        path
+        for slug in opponent_slugs
+        if (path := heroes_dir / f"{slug}.json").is_file()
+    )
     source_paths = [Path(__file__), Path(report_module.__file__)]
     return all(path.stat().st_mtime < output_mtime for path in input_paths + source_paths)
 
@@ -44,14 +57,21 @@ def _load_hero(heroes_dir: Path, slug: str) -> dict[str, Any]:
         raise MatchupReportError(f"JSON invalide pour {slug}") from error
 
 
-def _team_matchups(heroes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _team_matchups(
+    heroes: list[dict[str, Any]], vf_slugs: set[str]
+) -> list[dict[str, Any]]:
     by_opponent: dict[str, dict[str, Any]] = {}
     for hero in heroes:
         for matchup in hero["matchups"]:
             opponent = matchup["slug"]
             entry = by_opponent.setdefault(
                 opponent,
-                {"slug": opponent, "name": matchup["name"], "members": []},
+                {
+                    "slug": opponent,
+                    "name": matchup["name"],
+                    "vf": opponent in vf_slugs,
+                    "members": [],
+                },
             )
             entry["members"].append(
                 {
@@ -77,7 +97,16 @@ def calculate_matchup_report(team: list[str], heroes_dir: Path) -> dict[str, Any
     if len(team) != 3 or len(set(team)) != 3:
         raise MatchupReportError("Une équipe doit contenir exactement 3 héros différents")
     heroes = [_load_hero(heroes_dir, slug) for slug in team]
-    matchups = _team_matchups(heroes)
+    opponent_slugs = {
+        matchup["slug"] for hero in heroes for matchup in hero["matchups"]
+    }
+    vf_slugs = {
+        slug
+        for slug in opponent_slugs
+        if (heroes_dir / f"{slug}.json").is_file()
+        and _load_hero(heroes_dir, slug).get("vf") is True
+    }
+    matchups = _team_matchups(heroes, vf_slugs)
 
     for opponent in matchups:
         members = opponent["members"]
@@ -127,9 +156,12 @@ def _member_cell(member: dict[str, Any]) -> str:
     )
 
 
-def _summary_card(title: str, value: str, detail: str, css_class: str = "") -> str:
+def _summary_card(
+    title: str, value: str, detail: str, css_class: str = "", count_id: str = ""
+) -> str:
+    count_attribute = f' id="{count_id}"' if count_id else ""
     return (
-        f'<article class="summary-card {css_class}"><strong>{value}</strong>'
+        f'<article class="summary-card {css_class}"><strong{count_attribute}>{value}</strong>'
         f'<h3>{title}</h3><p>{detail}</p></article>'
     )
 
@@ -164,7 +196,7 @@ def render_matchup_report(report: dict[str, Any]) -> str:
                 for member in sorted(item["members"], key=lambda value: value["win_rate"])
             )
             rows.append(
-                f'<li><div><strong>{html.escape(item["name"])}</strong>'
+                f'<li data-vf="{str(item["vf"]).lower()}"><div><strong>{html.escape(item["name"])}</strong>'
                 f'<small>{item[count_key]} membres concernés</small></div>'
                 f'<div class="member-rates">{details}</div></li>'
             )
@@ -176,18 +208,23 @@ def render_matchup_report(report: dict[str, Any]) -> str:
         cells = "".join(f'<td>{_member_cell(member)}</td>' for member in opponent["members"])
         marker = " nemesis" if opponent["nemesis_count"] >= 2 else " sweet" if opponent["sweet_count"] >= 2 else ""
         matrix_rows.append(
-            f'<tr class="{marker}"><th scope="row">{html.escape(opponent["name"])}</th>'
+            f'<tr class="opponent-row{marker}" data-vf="{str(opponent["vf"]).lower()}" '
+            f'data-nemesis="{str(opponent["nemesis_count"] >= 2).lower()}" '
+            f'data-sweet="{str(opponent["sweet_count"] >= 2).lower()}">'
+            f'<th scope="row">{html.escape(opponent["name"])}</th>'
             f'{cells}<td class="best-choice">{html.escape(opponent["best"]["hero"])} '
             f'<b>{_percent(opponent["best"]["win_rate"])}</b></td>'
             f'<td>{_percent(opponent["spread"])}</td></tr>'
         )
 
+    vf_attributes = {item["slug"]: item["vf"] for item in matchups}
     notable_rows = "".join(
-        f'<tr><td>{html.escape(item["hero"])}</td><td>{html.escape(item["opponent"])}</td>'
+        f'<tr class="notable-row" data-vf="{str(vf_attributes[item["opponent_slug"]]).lower()}">'
+        f'<td>{html.escape(item["hero"])}</td><td>{html.escape(item["opponent"])}</td>'
         f'<td><span class="rate {item["classification"]}">{_percent(item["win_rate"])}</span></td>'
         f'<td>{item["matches"]}</td></tr>'
         for item in notable
-    ) or '<tr><td colspan="4" class="empty">Aucun matchup ne franchit ces seuils.</td></tr>'
+    )
 
     css = f"""
 {_embedded_font_css()}
@@ -201,17 +238,41 @@ main{{max-width:1280px;margin:0 auto;padding:3rem 1.25rem 5rem}} h1,h2,h3{{font-
 .legend{{display:flex;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin:1rem 0}} .legend span::before{{content:"";display:inline-block;width:.7rem;height:.7rem;margin-right:.35rem;background:currentColor}} .legend .good{{color:var(--teal)}} .legend .bad{{color:var(--red)}} .legend .even{{color:var(--gold)}} .empty{{padding:1rem;text-align:center;font-style:italic}}
 footer{{margin-top:3rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.8rem}} @media(max-width:800px){{main{{padding-top:2rem}} .intro{{display:block}} .team{{text-align:left;margin-top:1rem}} .summary{{grid-template-columns:repeat(2,1fr)}} .grid{{grid-template-columns:1fr}}}}
 @media(max-width:480px){{.summary{{grid-template-columns:1fr 1fr;gap:.5rem}} .summary-card{{padding:.8rem}} .summary-card strong{{font-size:2rem}}}}
+[hidden]{{display:none!important}} .filters{{display:flex;justify-content:flex-end;padding:1rem 0;color:var(--muted)}} .filters label{{display:flex;align-items:center;gap:.55rem;cursor:pointer}} .filters input{{width:1.1rem;height:1.1rem;accent-color:var(--teal)}}
 """
+    vf_filter_script = """<script>
+(() => {
+    const filter = document.querySelector('#vf-filter');
+        const rows = [...document.querySelectorAll('.opponent-row')];
+        const notableRows = [...document.querySelectorAll('.notable-row')];
+    const update = () => {
+        const vfOnly = filter.checked;
+        document.querySelectorAll('[data-vf]').forEach(item => {
+            item.hidden = vfOnly && item.dataset.vf !== 'true';
+        });
+        const visibleRows = rows.filter(row => !row.hidden);
+            document.querySelector('#nemesis-count').textContent = visibleRows.filter(row => row.dataset.nemesis === 'true').length;
+            document.querySelector('#sweet-count').textContent = visibleRows.filter(row => row.dataset.sweet === 'true').length;
+        document.querySelector('#opponent-count').textContent = visibleRows.length;
+            const visibleNotableCount = notableRows.filter(row => !row.hidden).length;
+            document.querySelector('#notable-count').textContent = visibleNotableCount;
+            document.querySelector('.notable-empty').hidden = visibleNotableCount > 0;
+    };
+    filter.addEventListener('change', update);
+    update();
+})();
+</script>"""
     return f'''<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Matchups - {html.escape(team_names)}</title><style>{css}</style></head><body><main>
 <header class="intro"><div><div class="eyebrow">Dice Throne · préparation de draft</div><h1>{html.escape(team_names)}</h1><p>Une vue de préparation pour repérer les menaces communes, les cibles favorables et les duels qui méritent d'être mémorisés avant les bans.</p></div><div class="team">Équipe analysée<br><span>{html.escape(team_names)}</span></div></header>
-<section class="summary">{_summary_card("Némésis", str(len(nemeses)), "adversaires dangereux contre au moins 2 héros", "danger")}{_summary_card("Sweets", str(len(sweets)), "adversaires favorables contre au moins 2 héros", "gold")}{_summary_card("Matchups notables", str(len(notable)), "duels à 40% ou moins, ou 60% ou plus")}{_summary_card("Adversaires comparés", str(len(matchups)), "tous les héros du pool, y compris les mirror matches")}</section>
+<section class="summary">{_summary_card("Némésis", str(len(nemeses)), "adversaires dangereux contre au moins 2 héros", "danger", "nemesis-count")}{_summary_card("Sweets", str(len(sweets)), "adversaires favorables contre au moins 2 héros", "gold", "sweet-count")}{_summary_card("Matchups notables", str(len(notable)), "duels à 40% ou moins, ou 60% ou plus", count_id="notable-count")}{_summary_card("Adversaires comparés", str(len(matchups)), "tous les héros du pool, y compris les mirror matches", count_id="opponent-count")}</section>
+<section class="filters"><label><input type="checkbox" id="vf-filter" checked> Afficher uniquement les personnages VF</label></section>
 <section class="grid"><article class="panel"><h2>Némésis</h2><p>Priorité de ban ou de préparation : ces héros peuvent mettre en difficulté plusieurs membres de l'équipe.</p>{opponent_list(nemeses, "nemesis_count")}</article><article class="panel"><h2>Sweets</h2><p>Cibles à privilégier : plusieurs membres de l'équipe ont un avantage statistique clair.</p>{opponent_list(sweets, "sweet_count")}</article></section>
 <section><h2>Matrice de préparation</h2><p>Chaque pourcentage est la chance de victoire du héros de votre équipe. La colonne “meilleur choix” indique le héros à privilégier si cet adversaire arrive dans le trio.</p><div class="legend"><span class="good">60%+ très favorable</span><span class="even">entre les deux seuils</span><span class="bad">40%- très défavorable</span></div><div class="table-wrap"><table><thead><tr><th>Adversaire</th>{matrix_header}<th>Meilleur choix</th><th>Écart équipe</th></tr></thead><tbody>{''.join(matrix_rows)}</tbody></table></div></section>
-<section class="panel" style="margin-top:3rem"><h2>Matchups à retenir</h2><p>Les extrêmes sont les plus utiles à mémoriser. Les échantillons sont affichés pour garder le contexte statistique.</p><div class="table-wrap"><table><thead><tr><th>Votre héros</th><th>Adversaire</th><th>Votre winrate</th><th>Parties</th></tr></thead><tbody>{notable_rows}</tbody></table></div></section>
+<section class="panel" style="margin-top:3rem"><h2>Matchups à retenir</h2><p>Les extrêmes sont les plus utiles à mémoriser. Les échantillons sont affichés pour garder le contexte statistique.</p><div class="table-wrap"><table><thead><tr><th>Votre héros</th><th>Adversaire</th><th>Votre winrate</th><th>Parties</th></tr></thead><tbody>{notable_rows}<tr class="notable-empty" hidden><td colspan="4" class="empty">Aucun matchup notable dans cette sélection.</td></tr></tbody></table></div></section>
 <footer>Seuils : némésis/sweet à 45%/55% sur au moins 2 héros; matchup notable à 40% ou 60%. {_embedded_font_license()}</footer>
-</main></body></html>'''
+</main>{vf_filter_script}</body></html>'''
 
 
 def write_matchup_report(

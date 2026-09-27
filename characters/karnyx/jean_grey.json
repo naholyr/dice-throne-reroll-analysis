@@ -4,6 +4,7 @@
   "hero": {
     "name": "Jean Grey"
   },
+  "vf": true,
   "attributes": {
     "offense": 6,
     "defense": 7,

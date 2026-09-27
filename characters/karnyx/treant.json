@@ -4,6 +4,7 @@
   "hero": {
     "name": "Tréant"
   },
+  "vf": true,
   "attributes": {
     "offense": 4,
     "defense": 8,

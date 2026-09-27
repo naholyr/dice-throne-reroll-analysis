@@ -4,6 +4,7 @@
   "hero": {
     "name": "Elfe lunaire"
   },
+  "vf": true,
   "attributes": {
     "offense": 7,
     "defense": 9,

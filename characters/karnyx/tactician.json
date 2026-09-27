@@ -4,6 +4,7 @@
   "hero": {
     "name": "Tacticien"
   },
+  "vf": true,
   "attributes": {
     "offense": 3,
     "defense": 7,

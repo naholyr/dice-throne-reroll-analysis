@@ -4,6 +4,7 @@
   "hero": {
     "name": "Voleur de l'ombre"
   },
+  "vf": true,
   "attributes": {
     "offense": 7,
     "defense": 8,

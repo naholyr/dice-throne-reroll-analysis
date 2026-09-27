@@ -4,6 +4,7 @@
   "hero": {
     "name": "Artificier"
   },
+  "vf": true,
   "attributes": {
     "offense": 8,
     "defense": 5,

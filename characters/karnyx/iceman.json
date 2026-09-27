@@ -4,6 +4,7 @@
   "hero": {
     "name": "Iceman"
   },
+  "vf": true,
   "attributes": {
     "offense": 10,
     "defense": 4,

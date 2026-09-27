@@ -4,6 +4,7 @@
   "hero": {
     "name": "Black Panther"
   },
+  "vf": true,
   "attributes": {
     "offense": 6,
     "defense": 4,
