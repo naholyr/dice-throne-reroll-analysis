@@ -46,7 +46,7 @@
       "matches": 49
     },
     {
-      "name": "Pyromancer",
+      "name": "Pyromancienne",
       "slug": "pyromancer",
       "win_rate": 51.27,
       "opponent_win_rate": 48.73,
@@ -144,7 +144,7 @@
       "matches": 86
     },
     {
-      "name": "Artificer",
+      "name": "Artificier",
       "slug": "artificer",
       "win_rate": 60.91,
       "opponent_win_rate": 39.09,
@@ -193,7 +193,7 @@
       "matches": 33
     },
     {
-      "name": "Shadow Thief",
+      "name": "Voleur de l'ombre",
       "slug": "shadow_thief",
       "win_rate": 63.78,
       "opponent_win_rate": 36.22,
@@ -207,7 +207,7 @@
       "matches": 39
     },
     {
-      "name": "Tactician",
+      "name": "Tacticien",
       "slug": "tactician",
       "win_rate": 64.28999999999999,
       "opponent_win_rate": 35.71,
@@ -228,14 +228,14 @@
       "matches": 40
     },
     {
-      "name": "Santa",
+      "name": "Père Noël",
       "slug": "santa",
       "win_rate": 65.38,
       "opponent_win_rate": 34.62,
       "matches": 26
     },
     {
-      "name": "Vampire Lord",
+      "name": "Reine Vampire",
       "slug": "vampire_lord",
       "win_rate": 66.67,
       "opponent_win_rate": 33.33,
@@ -263,42 +263,42 @@
       "matches": 102
     },
     {
-      "name": "Treant",
+      "name": "Tréant",
       "slug": "treant",
       "win_rate": 72.55,
       "opponent_win_rate": 27.45,
       "matches": 51
     },
     {
-      "name": "Barbarian",
+      "name": "Barbare",
       "slug": "barbarian",
       "win_rate": 76.27,
       "opponent_win_rate": 23.73,
       "matches": 59
     },
     {
-      "name": "Seraph",
+      "name": "Séraphine",
       "slug": "seraph",
       "win_rate": 76.47,
       "opponent_win_rate": 23.53,
       "matches": 34
     },
     {
-      "name": "Monk",
+      "name": "Moine",
       "slug": "monk",
       "win_rate": 76.67,
       "opponent_win_rate": 23.33,
       "matches": 120
     },
     {
-      "name": "Moon Elf",
+      "name": "Elfe lunaire",
       "slug": "moon_elf",
       "win_rate": 80.0,
       "opponent_win_rate": 20.0,
       "matches": 55
     },
     {
-      "name": "Huntress",
+      "name": "Chasseresse",
       "slug": "huntress",
       "win_rate": 80.0,
       "opponent_win_rate": 20.0,
@@ -319,7 +319,7 @@
       "matches": 78
     },
     {
-      "name": "Gunslinger",
+      "name": "As de la gâchette",
       "slug": "gunslinger",
       "win_rate": 87.5,
       "opponent_win_rate": 12.5,

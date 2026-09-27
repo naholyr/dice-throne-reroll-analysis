@@ -53,7 +53,7 @@
       "matches": 86
     },
     {
-      "name": "Shadow Thief",
+      "name": "Voleur de l'ombre",
       "slug": "shadow_thief",
       "win_rate": 37.5,
       "opponent_win_rate": 62.5,
@@ -67,7 +67,7 @@
       "matches": 29
     },
     {
-      "name": "Pyromancer",
+      "name": "Pyromancienne",
       "slug": "pyromancer",
       "win_rate": 38.46,
       "opponent_win_rate": 61.54,
@@ -130,7 +130,7 @@
       "matches": 36
     },
     {
-      "name": "Artificer",
+      "name": "Artificier",
       "slug": "artificer",
       "win_rate": 44.78,
       "opponent_win_rate": 55.22,
@@ -144,7 +144,7 @@
       "matches": 57
     },
     {
-      "name": "Moon Elf",
+      "name": "Elfe lunaire",
       "slug": "moon_elf",
       "win_rate": 46.81,
       "opponent_win_rate": 53.19,
@@ -158,7 +158,7 @@
       "matches": 36
     },
     {
-      "name": "Gunslinger",
+      "name": "As de la gâchette",
       "slug": "gunslinger",
       "win_rate": 47.37,
       "opponent_win_rate": 52.63,
@@ -186,7 +186,7 @@
       "matches": 49
     },
     {
-      "name": "Barbarian",
+      "name": "Barbare",
       "slug": "barbarian",
       "win_rate": 49.06,
       "opponent_win_rate": 50.94,
@@ -207,14 +207,14 @@
       "matches": 57
     },
     {
-      "name": "Huntress",
+      "name": "Chasseresse",
       "slug": "huntress",
       "win_rate": 52.5,
       "opponent_win_rate": 47.5,
       "matches": 40
     },
     {
-      "name": "Tactician",
+      "name": "Tacticien",
       "slug": "tactician",
       "win_rate": 53.19,
       "opponent_win_rate": 46.81,
@@ -235,7 +235,7 @@
       "matches": 49
     },
     {
-      "name": "Vampire Lord",
+      "name": "Reine Vampire",
       "slug": "vampire_lord",
       "win_rate": 56.86,
       "opponent_win_rate": 43.14,
@@ -263,7 +263,7 @@
       "matches": 66
     },
     {
-      "name": "Santa",
+      "name": "Père Noël",
       "slug": "santa",
       "win_rate": 58.82,
       "opponent_win_rate": 41.18,
@@ -298,7 +298,7 @@
       "matches": 31
     },
     {
-      "name": "Monk",
+      "name": "Moine",
       "slug": "monk",
       "win_rate": 65.91,
       "opponent_win_rate": 34.09,
@@ -312,14 +312,14 @@
       "matches": 9
     },
     {
-      "name": "Treant",
+      "name": "Tréant",
       "slug": "treant",
       "win_rate": 70.21000000000001,
       "opponent_win_rate": 29.79,
       "matches": 47
     },
     {
-      "name": "Seraph",
+      "name": "Séraphine",
       "slug": "seraph",
       "win_rate": 73.91,
       "opponent_win_rate": 26.09,

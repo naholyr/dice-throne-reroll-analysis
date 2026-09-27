@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "name": "Voleur de l'ombre",
+  "symbols": {
+    "distribution": "AABBCD",
+    "A": {
+      "color": "#68AB43",
+      "name": "Dague"
+    },
+    "B": {
+      "color": "#F0C77B",
+      "name": "Sac"
+    },
+    "C": {
+      "color": "#EBA1C2",
+      "name": "Carte"
+    },
+    "D": {
+      "color": "#F9F6FC",
+      "name": "Ombre"
+    }
+  },
+  "abilities": [
+    { "name": "Coup de dague 1", "symbols": "AAA" },
+    { "name": "Coup de dague 2", "symbols": "AAAA" },
+    { "name": "Coup de dague 3", "symbols": "AAAAA" },
+    { "name": "Pickpocket 1", "symbols": "BB" },
+    { "name": "Pickpocket 2", "symbols": "BBB" },
+    { "name": "Pickpocket 3", "symbols": "BBBB" },
+    { "name": "Pickpocket 4 *", "symbols": "BBBBB" },
+    { "name": "Carducopia", "symbols": "CC" },
+    { "name": "Coup robuste", "straight": "small" },
+    { "name": "Frappe de l'ombre *", "symbols": "AADD" },
+    { "name": "Frappe sournoise", "straight": "large" },
+    { "name": "Coup de surin *", "symbols": "ABCD" },
+    { "name": "Danse de l'ombre", "symbols": "DDD" },
+    { "name": " ! (ultime)", "symbols": "DDDDD" }
+  ]
+}
