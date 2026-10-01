@@ -76,6 +76,28 @@ class MatchupReportTests(unittest.TestCase):
             self.assertEqual({member["hero"] for member in alpha_entry["members"]}, {"Alpha", "Beta", "Gamma"})
             self.assertEqual(alpha_entry["members"][0]["win_rate"], 50)
 
+    def test_renders_explicit_cell_for_missing_mirror_matchup(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            heroes_dir = Path(directory)
+            payloads = {
+                "alpha": hero_payload("alpha", "Alpha", {"beta": 50, "gamma": 45}),
+                "beta": hero_payload("beta", "Beta", {"alpha": 50, "gamma": 55}),
+                "gamma": hero_payload("gamma", "Gamma", {"alpha": 55, "beta": 45}),
+            }
+            for slug, payload in payloads.items():
+                (heroes_dir / f"{slug}.json").write_text(json.dumps(payload), encoding="utf-8")
+
+            html = render_matchup_report(
+                calculate_matchup_report(["alpha", "beta", "gamma"], heroes_dir)
+            )
+
+            gamma_row = next(
+                row for row in html.split("<tr")
+                if 'scope="row">Gamma</th>' in row
+            )
+            self.assertIn('<td class="mirror-match">Miroir</td>', gamma_row)
+            self.assertEqual(gamma_row.count("<td"), 5)
+
     def test_renders_summary_member_rates_with_color_classes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             heroes_dir = Path(directory)

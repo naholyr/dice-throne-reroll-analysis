@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "name": "Ghost Runner",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#D68CBE",
+      "name": "Blade"
+    },
+    "B": {
+      "color": "#549FE1",
+      "name": "Grid"
+    },
+    "C": {
+      "color": "#DEF6BF",
+      "name": "Ghost"
+    }
+  },
+  "abilities": [
+    { "name": "Wraith Walk", "symbols": "AAAC" },
+    { "name": "Duppy Dash", "symbols": "AACC" },
+    { "name": "Revenant Rush", "symbols": "ACCC" },
+    { "name": "Spectral Sprint", "symbols": "CCCC" },
+    { "name": "Cloaked Crawl", "symbols": "ABBC" },
+    { "name": "Doppelgang Dart", "symbols": "AABBB" },
+    { "name": "Phantom Pace 1", "straight": "small" },
+    { "name": "Phantom Pace 2", "straight": "large" },
+    { "name": "Apparition Assault ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

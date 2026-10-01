@@ -205,7 +205,15 @@ def render_matchup_report(report: dict[str, Any]) -> str:
     matrix_header = "".join(f'<th>{html.escape(item["name"])}</th>' for item in team)
     matrix_rows = []
     for opponent in sorted(matchups, key=lambda item: (-item["nemesis_count"], item["name"])):
-        cells = "".join(f'<td>{_member_cell(member)}</td>' for member in opponent["members"])
+        members_by_slug = {member["hero_slug"]: member for member in opponent["members"]}
+        cells = "".join(
+            f'<td>{_member_cell(members_by_slug[hero["slug"]])}</td>'
+            if hero["slug"] in members_by_slug
+            else '<td class="mirror-match">Miroir</td>'
+            if hero["slug"] == opponent["slug"]
+            else '<td class="missing-matchup">N/D</td>'
+            for hero in team
+        )
         marker = " nemesis" if opponent["nemesis_count"] >= 2 else " sweet" if opponent["sweet_count"] >= 2 else ""
         matrix_rows.append(
             f'<tr class="opponent-row{marker}" data-vf="{str(opponent["vf"]).lower()}" '
@@ -236,6 +244,7 @@ main{{max-width:1280px;margin:0 auto;padding:3rem 1.25rem 5rem}} h1,h2,h3{{font-
 .grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1rem 0 3rem}} .panel{{background:var(--panel);border:1px solid var(--line);padding:1.25rem}} .panel>p{{margin-bottom:1rem}} .compact-list{{list-style:none;padding:0;margin:0}} .compact-list li{{display:flex;justify-content:space-between;gap:1rem;border-top:1px solid var(--line);padding:.75rem 0}} .compact-list li>div:first-child{{display:flex;flex-direction:column}} .compact-list small,td small{{display:block;color:var(--muted);font-size:.82rem}} .member-rates{{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:end;color:var(--muted)}}
 .table-wrap{{overflow:auto;background:var(--panel);border:1px solid var(--line)}} table{{width:100%;border-collapse:collapse;min-width:760px}} th,td{{padding:.7rem .8rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}} thead th{{background:#e8dfd1;font-family:"League Spartan";font-size:.9rem}} tbody th{{font-family:"League Spartan";white-space:nowrap}} tbody tr.nemesis{{background:#f9e9e7}} tbody tr.sweet{{background:#e7f2ee}} .rate{{font:700 1.1rem "League Spartan"}} .rate.good{{color:var(--teal);font-weight:700}} .rate.bad{{color:var(--red);font-weight:700}} .rate.even{{color:var(--ink);font-weight:700}} .rate.muted{{color:var(--muted);font-weight:400;opacity:.75}} td .rate+small{{margin-top:.15rem}} .best-choice b{{color:var(--teal)}}
 .legend{{display:flex;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin:1rem 0}} .legend span::before{{content:"";display:inline-block;width:.7rem;height:.7rem;margin-right:.35rem;background:currentColor}} .legend .good{{color:var(--teal)}} .legend .bad{{color:var(--red)}} .legend .even{{color:var(--gold)}} .empty{{padding:1rem;text-align:center;font-style:italic}}
+td.mirror-match,td.missing-matchup{{color:var(--muted);font-style:italic}}
 footer{{margin-top:3rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.8rem}} @media(max-width:800px){{main{{padding-top:2rem}} .intro{{display:block}} .team{{text-align:left;margin-top:1rem}} .summary{{grid-template-columns:repeat(2,1fr)}} .grid{{grid-template-columns:1fr}}}}
 @media(max-width:480px){{.summary{{grid-template-columns:1fr 1fr;gap:.5rem}} .summary-card{{padding:.8rem}} .summary-card strong{{font-size:2rem}}}}
 [hidden]{{display:none!important}} .filters{{display:flex;justify-content:flex-end;padding:1rem 0;color:var(--muted)}} .filters label{{display:flex;align-items:center;gap:.55rem;cursor:pointer}} .filters input{{width:1.1rem;height:1.1rem;accent-color:var(--teal)}}
