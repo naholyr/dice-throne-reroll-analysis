@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "name": "Snyper",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#CDBECA",
+      "name": "Snipe"
+    },
+    "B": {
+      "color": "#4C979A",
+      "name": "Shoot?"
+    },
+    "C": {
+      "color": "#B75375",
+      "name": "Aim?"
+    }
+  },
+  "abilities": [
+    { "name": "Ballistics 1", "symbols": "AAA" },
+    { "name": "Ballistics 2", "symbols": "AAAA" },
+    { "name": "Ballistics 3", "symbols": "AAAAA" },
+    { "name": "Skillshot", "symbols": "BBBC" },
+    { "name": "Wallbang", "symbols": "AABBB" },
+    { "name": "Pinpoint Accuracy", "symbols": "ACCC" },
+    { "name": "Precision Fire", "symbols": "CCCC" },
+    { "name": "Steady Aim", "straight": "small" },
+    { "name": "Piercing Shot", "straight": "large" },
+    { "name": "Headshot ! (ultime)", "symbols": "CCCCC" }
+  ]
+}

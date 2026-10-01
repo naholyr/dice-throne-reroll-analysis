@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "name": "Punch-a-tron 3000",
+  "symbols": {
+    "distribution": "AAABBC",
+    "A": {
+      "color": "#EFBD87",
+      "name": "Punch"
+    },
+    "B": {
+      "color": "#DF6E2B",
+      "name": "Juice"
+    },
+    "C": {
+      "color": "#C63748",
+      "name": "Hit?"
+    }
+  },
+  "abilities": [
+    { "name": "Turbo Fists 1", "symbols": "AAA" },
+    { "name": "Turbo Fists 2", "symbols": "AAAA" },
+    { "name": "Turbo Fists 3", "symbols": "AAAAA" },
+    { "name": "Tempered Approach", "symbols": "ABBC" },
+    { "name": "Bubbling Anger", "symbols": "AABBB" },
+    { "name": "Rage Bomb", "symbols": "BCCC" },
+    { "name": "Cyber Uppercut", "symbols": "CCCC" },
+    { "name": "One-Two Punch", "straight": "small" },
+    { "name": "Powered Punch", "straight": "large" },
+    { "name": "Radioaction ! (ultime)", "symbols": "CCCCC" }
+  ]
+}
